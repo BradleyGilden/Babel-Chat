@@ -64,7 +64,7 @@ roomSchema.virtual('userCount').get(function() {
 const User = mongoose.model('User', userSchema);
 const Room = mongoose.model('Room', roomSchema);
 
-export default {
+export {
   User,
   Room
 }

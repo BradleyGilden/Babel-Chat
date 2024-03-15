@@ -5,6 +5,6 @@
 
 import serviceCheck from './service';
 
-export default {
+export {
   serviceCheck,
 };
