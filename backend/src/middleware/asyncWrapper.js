@@ -12,4 +12,4 @@ const asyncWrapper = (callBack) => {
       next(error);
     }
   }
-}
+};
