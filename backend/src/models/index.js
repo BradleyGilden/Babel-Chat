@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  color: {
+    type: String,
+    default: () => "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0"),
+  },
   createdAt: {
     type: Date,
     default: () => Date.now(),
@@ -41,6 +45,10 @@ const roomSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: () => Date.now(),
+  },
+  color: {
+    type: String,
+    default: () => "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0"),
   },
   namespace: {
     type: String,

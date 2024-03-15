@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "nodemon --exec babel-node --presets @babel/preset-env ./src/index.js",
     "prebuild": "babel src -d build",
-    "start": "node buld/index.js",
-    "build": "npm run prebuild && npm start"
+    "start": "node build/index.js",
+    "build": "npm install && npm run prebuild && npm start"
   },
   "keywords": [],
   "author": "",
