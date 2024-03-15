@@ -1,0 +1,26 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --exec babel-node --presets @babel/preset-env",
+    "build": "babel src -d build",
+    "start": "node buld/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/cli": "^7.23.9",
+    "@babel/core": "^7.24.0",
+    "@babel/node": "^7.23.9",
+    "@babel/preset-env": "^7.24.0",
+    "@babel/register": "^7.23.7",
+    "@socket.io/admin-ui": "^0.5.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.3",
+    "google-translate-api-x": "^10.6.8",
+    "socket.io": "^4.7.4"
+  }
+}
