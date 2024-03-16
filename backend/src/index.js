@@ -3,8 +3,8 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import baseRouter from './routes';
-import mongooseConnect from './db/connect';
 import errorHandler from './middleware/errorHandler';
+import serverInit from './utility/init';
 
 // get environment variable files form .env for testing
 dotenv.config();
@@ -14,16 +14,11 @@ const app = express();
 // Middleware declarations
 app.use(cors());
 app.use(morgan("dev"));
-app.use('/api', baseRouter);
+app.use('/', baseRouter);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 3000
-
-const serverInit = async () => {
-  // establish database connection
-  await mongooseConnect();
-
-  app.listen(PORT, () => {
-    console.log("server starting on port 3000");
-  });
+const serverStartup = async () => {
+  const server = await serverInit(app);
 }
+
+serverStartup();

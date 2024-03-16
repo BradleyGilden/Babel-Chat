@@ -1,14 +1,17 @@
+import mongooseConnect from '../db/connect';
+
 /**
  * Establishes connection
- * @param {*} mongooseConnector 
- * @param {*} serverApp 
+ * @param { express.Express } app instance of express()
  * @returns { http.Server }  server instance
  */
-const serverInit = async (mongooseConnector, serverApp) => {
+const serverInit = async (app) => {
   // establish database connection
-  await mongooseConnector();
+  await mongooseConnect();
 
-  return app.listen(PORT, () => {
+  return app.listen(process.env.PORT || 3000, () => {
     console.log("server starting on port 3000");
   });
 };
+
+export default serverInit;
