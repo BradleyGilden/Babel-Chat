@@ -4,8 +4,11 @@
 
 
 import { serverCheck, dbCheck } from './service';
+import { createUser, validateUser } from './user';
 
 export {
   serverCheck,
   dbCheck,
+  createUser,
+  validateUser,
 };

@@ -32,7 +32,12 @@ const validateUser = asyncWrapper(async (req, res) => {
   if (!isValid) {
     throw new CustomError(`Invalid Credentials: Username '${username}' does not match password`, 401);
   }
-  res.status(200).send(`Sign in succcessful. Welcome ${username}`);
+  res.status(200).json({
+    id: String(user._id),
+    username: user.username,
+    color: user.color,
+    rooms: user.rooms
+  });
 });
 
 export {

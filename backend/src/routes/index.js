@@ -3,11 +3,14 @@
  */
 
 import express from 'express';
-import { serverCheck, dbCheck } from '../controllers';
+import { serverCheck, dbCheck, createUser, validateUser } from '../controllers';
 
 const baseRouter = express.Router();
 
-baseRouter.get('/', serverCheck);
-baseRouter.get('/db', dbCheck);
+baseRouter
+.get('/', serverCheck)
+.get('/db', dbCheck)
+.post('/user/signup', createUser)
+.post('/user/login', validateUser);
 
 export default baseRouter;
