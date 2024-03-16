@@ -1,0 +1,24 @@
+### -------------- Status Checks ---------------------------
+GET http://localhost:3000/aslkdfj
+###
+GET http://localhost:3000/
+###
+GET http://localhost:3000/db
+
+### ------------------ Signup ---------------------------
+
+POST http://localhost:3000/user/signup
+content-type: application/json
+
+{
+"username": "JohnSnow", "email": "idontwantit@castleblack.com", "password": "Daenerys123"
+}
+
+### ----------------- Login ----------------------------------------
+
+POST http://localhost:3000/user/login
+content-type: application/json
+
+{
+"username": "JohnSnow",  "password": "Daenerys123"
+}
