@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
 /**
  * Basic status check to see if backend service is operational
- * @param {Request} req 
- * @param {Response} res 
+ * @param { express.Request} req 
+ * @param { express.Response } res 
  */
 
 const serviceCheck = (req, res) => {
