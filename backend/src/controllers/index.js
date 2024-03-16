@@ -3,8 +3,9 @@
  */
 
 
-import serviceCheck from './service';
+import { serverCheck, dbCheck } from './service';
 
 export {
-  serviceCheck,
+  serverCheck,
+  dbCheck,
 };

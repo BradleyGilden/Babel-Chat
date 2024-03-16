@@ -3,10 +3,11 @@
  */
 
 import express from 'express';
-import { serviceCheck } from '../controllers';
+import { serverCheck, dbCheck } from '../controllers';
 
 const baseRouter = express.Router();
 
-baseRouter.get('/', serviceCheck);
+baseRouter.get('/', serverCheck);
+baseRouter.get('/db', dbCheck);
 
 export default baseRouter;
