@@ -13,6 +13,11 @@ const userSchema = new mongoose.Schema({
     maxLength: 20,
     trim: true,
   },
+  email: {
+    type: String,
+    required: true,
+    lowercase: true,  // changed all input to lowercase
+  },
   password: {
     type: String,
     required: true,

@@ -4,7 +4,7 @@
 import bcrypt from 'bcrypt';
 
 /**
- * hashes a plaintext password using bcrypts hash method with 10 satl rounds
+ * hashes a plaintext password using bcrypt's hash method with 10 satl rounds
  * @param {string} plainTextPassword plain text password
  * @return {string} a salted hash
  */
