@@ -10,10 +10,19 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.2",
+    "autoprefixer": "^10.4.18",
+    "daisyui": "^4.7.3",
+    "postcss": "^8.4.35",
     "svelte": "^4.2.12",
+    "tailwindcss": "^3.4.1",
     "vite": "^5.1.6"
   },
   "dependencies": {
     "svelte-spa-router": "^4.0.1"
-  }
+  },
+  "description": "contains all frontend logic and styling",
+  "main": "svelte.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
