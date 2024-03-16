@@ -18,6 +18,7 @@
     "vite": "^5.1.6"
   },
   "dependencies": {
+    "axios": "^1.6.8",
     "svelte-spa-router": "^4.0.1"
   },
   "description": "contains all frontend logic and styling",

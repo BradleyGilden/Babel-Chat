@@ -1,4 +1,7 @@
 <script>
+// @ts-nocheck
+
+  import axios from "axios";
   // @ts-nocheck
     let showPassword = false
     let disabled = true;
@@ -8,6 +11,7 @@
     let validPassword = true;
     let validUsername = true;
     let initialized = false;
+    let isLoading = false;
   
     $: {
       if (initialized) {
@@ -29,11 +33,24 @@
       } else {
         initialized = true
       }
+    };
+
+    const handleSubmit = async () => {
+      isLoading = true;
+      const signFormSwitch = document.getElementById('signFormSwitch');
+      const response = await axios.post('http://localhost:3000/api/user/signup', {
+        username,
+        email,
+        password
+      });
+      console.log(response);
+      isLoading = false;
+      signFormSwitch.click();
     }
   </script>
   
   <div class='w-1/2 mt-16 mx-auto'>
-    <form on:submit|preventDefault={() => {}} class='flex flex-col w-3/5 gap-y-10 mx-auto'>
+    <form on:submit|preventDefault={handleSubmit} class='flex flex-col w-3/5 gap-y-10 mx-auto'>
       <div>
         {#if !validUsername}
         <p class='pl-2 text-warning mb-1'>Username must be atleast 4 characters long</p>
@@ -68,9 +85,14 @@
 
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <p class="text-end">Already a member? <span class="text-primary hover:cursor-pointer" on:click>Login</span></p>
+      <p class="text-end">Already a member? <span id='signFormSwitch' class="text-primary hover:cursor-pointer" on:click>Login</span></p>
 
-      <button type="submit" disabled={disabled} class='btn btn-primary text-bg text-xl w-fit ml-auto'>Signup</button>
+      <button type="submit" disabled={disabled} class='btn btn-primary text-bg text-xl w-fit ml-auto'>
+        {#if isLoading}
+        <span class="loading loading-spinner"></span>
+        {/if}
+        Signup
+      </button>
     </form>
   </div>
   
