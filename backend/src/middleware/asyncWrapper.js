@@ -13,3 +13,5 @@ const asyncWrapper = (callBack) => {
     }
   }
 };
+
+export default asyncWrapper;
