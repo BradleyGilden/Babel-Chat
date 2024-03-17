@@ -1,9 +1,10 @@
 <script>
 // @ts-nocheck
-  import { push } from 'svelte-spa-router'
+  import { push } from 'svelte-spa-router';
+  import { userData } from '../store';
   import axios from "axios";
   import Swal from 'sweetalert2';
-  let showPassword = false
+  let showPassword = false;
   let disabled = true;
   let password = '';
   let username = ''
@@ -41,7 +42,14 @@
           username,
           password
         });
-        console.log(response);
+        // set value in store
+        const responseData = response.data;
+        $userData = responseData;
+        localStorage.setItem('user', JSON.stringify({
+          id: responseData.id,
+          username: responseData.username,
+          color: responseData.color,
+        }))
         isLoading = false;
         await push('/home');
       } catch(err) {
