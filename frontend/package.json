@@ -19,7 +19,8 @@
   },
   "dependencies": {
     "axios": "^1.6.8",
-    "svelte-spa-router": "^4.0.1"
+    "svelte-spa-router": "^4.0.1",
+    "sweetalert2": "^11.10.6"
   },
   "description": "contains all frontend logic and styling",
   "main": "svelte.config.js",

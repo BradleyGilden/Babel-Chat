@@ -1,5 +1,8 @@
 <script>
 // @ts-nocheck
+  import { push } from 'svelte-spa-router'
+  import axios from "axios";
+  import Swal from 'sweetalert2';
   let showPassword = false
   let disabled = true;
   let password = '';
@@ -7,6 +10,7 @@
   let validPassword = true;
   let validUsername = true;
   let initialized = false;
+  let isLoading = false;
 
   $: {
     if (initialized) {
@@ -29,13 +33,33 @@
       initialized = true
     }
   }
+
+  const handleSubmit = async () => {
+      isLoading = true;
+      try {
+        const response = await axios.post('http://localhost:3000/api/user/login', {
+          username,
+          password
+        });
+        console.log(response);
+        isLoading = false;
+        await push('/home');
+      } catch(err) {
+        isLoading = false;
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: err?.response?.data.message,
+        });
+      }
+    }
 </script>
 
 <div class='w-1/2 mt-16 mx-auto'>
-  <form on:submit|preventDefault={() => {}} class='flex flex-col w-3/5 gap-y-10 mx-auto'>
+  <form on:submit|preventDefault={handleSubmit} class='flex flex-col w-3/5 gap-y-10 mx-auto'>
     <div>
       {#if !validUsername}
-      <p class='pl-2 text-warning mb-1'>Username must be atleast 4 characters long</p>
+      <p class='pl-2 text-error mb-1'>Username must be atleast 4 characters long</p>
       {/if}
       <label class="input input-bordered flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" /></svg>
@@ -45,7 +69,7 @@
 
     <div>
       {#if !validPassword}
-      <p class='pl-2 text-warning mb-1'>Password must be 8-16 characters long, with atleast one Uppercase, Lowercase and digit</p>
+      <p class='pl-2 text-error mb-1'>Password must be 8-16 characters long, with atleast one Uppercase, Lowercase and digit</p>
       {/if}
       <label class="input input-bordered flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70"><path fill-rule="evenodd" d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z" clip-rule="evenodd" /></svg>
@@ -63,7 +87,12 @@
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <p class="text-end">Not a member? <span class="text-primary hover:cursor-pointer" on:click>Signup</span></p>
-    <button type="submit" disabled={disabled} class='btn btn-primary text-bg text-xl w-fit ml-auto'>Login</button>
+    <button type="submit" disabled={disabled} class='btn btn-primary text-bg text-xl w-fit ml-auto'>
+      {#if isLoading}
+      <span class="loading loading-spinner"></span>
+      {/if}
+      Login
+    </button>
   </form>
 </div>
 

@@ -20,7 +20,7 @@
   <input
   type="checkbox"
   class="theme-controller"
-  value="winter"
+  value="nord"
   bind:checked={isDark}
   />
   <!-- sun icon -->
