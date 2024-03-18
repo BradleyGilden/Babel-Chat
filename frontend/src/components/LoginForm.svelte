@@ -2,6 +2,8 @@
 // @ts-nocheck
   import { push } from 'svelte-spa-router';
   import { userData } from '../store';
+  import { slide } from "svelte/transition";
+  import { quintOut } from 'svelte/easing';
   import axios from "axios";
   import Swal from 'sweetalert2';
   let showPassword = false;
@@ -63,7 +65,7 @@
     }
 </script>
 
-<div class='w-1/2 mt-16 mx-auto'>
+<div class='w-1/2 mt-16 mx-auto' transition:slide={{ delay: 250, duration: 300, axis: 'y', opacity: 0.5, ease: quintOut }}>
   <form on:submit|preventDefault={handleSubmit} class='flex flex-col w-3/5 gap-y-10 mx-auto'>
     <div>
       {#if !validUsername}
