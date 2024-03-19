@@ -1,2 +1,2 @@
 # Babel-Chat
-A web based messaging platform using Socket.io
+A web-based messaging platform using Socket.io
