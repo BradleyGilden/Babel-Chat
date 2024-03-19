@@ -32,12 +32,18 @@ const validateUser = asyncWrapper(async (req, res) => {
   if (!isValid) {
     throw new CustomError(`Invalid Credentials: Username '${username}' does not match password`, 401);
   }
-  res.status(200).json({
+
+  const userObj = {
     id: String(user._id),
     username: user.username,
     color: user.color,
     rooms: user.rooms
-  });
+  }
+
+  req.session.user = userObj;
+  req.session.user.id = user._id;
+
+  res.status(200).json(userObj);
 });
 
 export {

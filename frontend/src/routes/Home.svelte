@@ -6,17 +6,20 @@
   import { userData } from '../store';
   import ThemeSelect from '../components/ThemeSelect.svelte';
   import Profile from '../components/Profile.svelte';
-  import dateFormatter from '../utility/dateHandler';
+  import axios from 'axios';
+  import ChatBubbles from '../components/ChatBubbles.svelte';
 
+  let rooms = {};
   let userInfo = JSON.parse(localStorage.getItem('user'));
   let roomMembers = 0;
-  let roomList = ["Just Chatting", "Sports", "Books", "Movies", "News", "Jobs"];
-  let joinedRooms = []
+  let roomList = [];
+  let listenRooms = new Set();
+  let joinedRooms = new Set();
   let currentRoom = 'Just Chatting';
   let currentText = '';
 
   $: messages = roomList.reduce((acc, key) => {
-    acc[key] = []
+    acc[key.name] = key.messages;
     return acc
   }, {});
 
@@ -24,28 +27,31 @@
 
   const roomListenerInit = (socket, roomList) => {
     for (const room of roomList) {
-      socket.on(`${room}-status`, (message) => {
-        roomMembers = message.numClients;
-        if (!joinedRooms.includes(room)) {
-          message.text = `${message.username} has joined ${room}`
-          message.username = 'system';
-          messages[currentRoom] = [...messages[currentRoom], message]
-        }
-        joinedRooms = [...joinedRooms, room]
-      });
-      socket.on(`${room}-message`, (message) => {
-        if (message.text) messages[currentRoom] = [...messages[currentRoom], message];
-      });
+      if (!listenRooms.has(room.name)) {
+        listenRooms = new Set([...listenRooms, room.name])
+        socket.on(`${room.name}-status`, (message) => {
+          roomMembers = message.numClients;
+          if (!joinedRooms.has(room.name)) {
+            message.text = `${message.username} has joined ${room.name}`
+            message.username = 'system';
+            messages[currentRoom] = [...messages[currentRoom], message]
+          }
+          joinedRooms = new Set([...joinedRooms, room.name]);
+        });
+        socket.on(`${room.name}-message`, (message) => {
+          if (message.text) messages[message.currentRoom] = [...messages[message.currentRoom], message];
+        });
+      }
     }
   }
 
   
-  onMount(() => {
-    socket.on('connect', () => {
-      roomListenerInit(socket, roomList);
-      socket.emit('join room', { currentRoom, username: userInfo.username });
-      console.log('connected');
-    })
+  onMount(async () => {
+    let response = await axios.get("http://localhost:3000/api/rooms", { params: {namespace: '/' }});
+    roomList = response.data;
+    roomListenerInit(socket, roomList);
+    socket.emit('join room', { currentRoom, username: userInfo.username });
+    console.log('connected');
   });
 
   const roomClickHandler = (e) => {
@@ -89,11 +95,11 @@
         </div>
         <!-- Room List -->
         <div class="my-5 flex flex-col gap-5 text-xl max-h-screen grow">
-          {#each roomList as room, index (index)}
+          {#each roomList as room (room.id)}
           <button
-          class={room === currentRoom ? "btn w-[10rem] mx-auto btn-primary" : "btn w-[10rem] mx-auto"}
+          class={room.name === currentRoom ? "btn w-[10rem] mx-auto btn-primary" : "btn w-[10rem] mx-auto"}
           on:click={roomClickHandler}
-          >{room}</button>
+          >{room.name}</button>
           {/each}
         </div>
       </div>
@@ -108,21 +114,12 @@
         </div>
       </header>
 
-      <div id="MessageBlock" class="w-full grow max-h-[calc(100vh-10rem)] overflow-auto p-10">
-        {#each messages[currentRoom] as message }
-        <div class="chat chat-end">
-          <div class="chat-image avatar">
-            <div class="w-10 rounded-full">
-              <img alt="Tailwind CSS chat bubble component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-            </div>
-          </div>
-          <div class="chat-header">
-            Obi-Wan Kenobi
-            <time class="text-xs opacity-50">{dateFormatter(message.date)}</time>
-          </div>
-          <pre class="chat-bubble">{message.text}</pre>
-        </div>
-        {/each}
+      <div id="MessageBlock" class="w-full grow max-h-[calc(100vh-10rem)] overflow-auto p-10 flex flex-col gap-y-5">
+        {#if Array.isArray(messages[currentRoom])}
+          {#each messages[currentRoom] as message }
+            <ChatBubbles {message} username={userInfo.username} />
+          {/each}
+        {/if}
       </div>
 
 

@@ -22,3 +22,7 @@ content-type: application/json
 {
 "username": "JohnSnow",  "password": "Daenerys123"
 }
+
+#### ---------------------- rooms -------------------------------------
+
+GET http://localhost:3000/api/rooms?namespace=/
