@@ -1,13 +1,15 @@
-import { joinRoom, roomMessage, ghostJoin } from './roomControllers';
+import { joinRoom, roomMessage, ghostJoin, leaveRoom } from './roomControllers';
 
 const socketInit = (io) => {
   io.on('connection', (socket) => {
 
-    socket.on('join room', joinRoom(io, socket))
+    socket.on('join room', joinRoom(io, socket));
 
-    socket.on('ghost join', ghostJoin(socket))
+    socket.on('ghost join', ghostJoin(socket));
 
-    socket.on('room message', roomMessage(io))
+    socket.on('leave room', leaveRoom(socket));
+
+    socket.on('room message', roomMessage(io));
   })
 }
 

@@ -69,10 +69,14 @@ $: localStorage.setItem('currentRoom', currentRoom);
     currentText = '';
   }
 
-  const handleRoomDelete = async (roomId) => {
+  const handleRoomDelete = async (roomId, roomName) => {
     const id = roomId;
+    const name = roomName;
     roomList = roomList.filter((room) => room.id !== roomId);
+    // delete the room and all it's messages
     await axios.delete("http://localhost:3000/api/rooms", { data: { roomId: id } });
+    // leave room connected by the server
+    socket.emit('leave room', name);
   }
 
 </script>
@@ -84,12 +88,18 @@ $: localStorage.setItem('currentRoom', currentRoom);
         <Profile moniker={userInfo.username[0].toUpperCase()} status={'online'} />
         <h2 class='text-2xl'>{userInfo.username}</h2>
       </header>
-      <a href="#/" class="btn btn-success w-full text-2xl">Settings</a>
+      <a href="#/" class="btn btn-secondary w-full text-2xl rounded-none">Settings</a>
       <div class="w-full flex">
         <!-- NameSpaces -->
         <NameSpaces />
         <!-- Room List -->
         <div class="my-5 flex flex-col gap-5 text-xl max-h-screen grow">
+          <div class="bg-secondary-content relative text-primary flex w-full rounded-none text-xl border-t-primary border-b-primary gap-5 justify-center">
+            Add Room
+            <button class="h-8">
+              <svg class="relative h-full text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM11 11H7V13H11V17H13V13H17V11H13V7H11V11Z"></path></svg>
+            </button>
+          </div>
           {#each roomList as room (room.id)}
           <div class="w-full relative">
             <button
@@ -98,7 +108,7 @@ $: localStorage.setItem('currentRoom', currentRoom);
             >{room.name}</button>
             <button 
             class="absolute hover:text-warning text-error right-[13%]"
-            on:click={ async () => { await handleRoomDelete(room.id) }}
+            on:click={ async () => { await handleRoomDelete(room.id, room.name) }}
             >
               <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4 8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8ZM7 5V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V5H22V7H2V5H7ZM9 4V5H15V4H9ZM9 12V18H11V12H9ZM13 12V18H15V12H13Z"></path></svg>
             </button>

@@ -49,8 +49,15 @@ const roomMessage = (io) => {
   }
 };
 
+const leaveRoom = (socket) => {
+  return (roomName) => {
+    socket.leave(roomName);
+  }
+}
+
 export {
   joinRoom,
   roomMessage,
   ghostJoin,
+  leaveRoom,
 }
