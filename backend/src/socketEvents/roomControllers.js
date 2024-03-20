@@ -28,9 +28,16 @@ const joinRoom = (io, socket) => {
   
     // establishes a date for time the message was sent
     roomInfo.date = new Date();
-    io.to(roomName).emit(`${roomName}-status`, { socketId: socket.id, numClients: numClientsInRoom, ...roomInfo})
+    io.to(roomName).emit(`${roomName}-status`, { socketId: socket.id, numClients: numClientsInRoom, system: true, ...roomInfo})
   }
 };
+
+const ghostJoin = (socket) => {
+  return (roomInfo) => {
+    const roomName = roomInfo.currentRoom;
+    socket.join(roomName);
+  }
+}
 
 const roomMessage = (io) => {
   return  (messageInfo) => {
@@ -45,4 +52,5 @@ const roomMessage = (io) => {
 export {
   joinRoom,
   roomMessage,
+  ghostJoin,
 }

@@ -5,7 +5,7 @@
 
 import { serverCheck, dbCheck } from './service';
 import { createUser, validateUser } from './user';
-import { getRooms } from './rooms';
+import { getRooms, deleteRooms } from './rooms';
 
 export {
   serverCheck,
@@ -13,4 +13,5 @@ export {
   createUser,
   validateUser,
   getRooms,
+  deleteRooms,
 };

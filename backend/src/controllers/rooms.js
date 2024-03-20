@@ -1,5 +1,6 @@
+import { Types } from 'mongoose';
 import asyncWrapper from '../middleware/asyncWrapper';
-import { Room } from '../models';
+import { Room, Message } from '../models';
 import CustomError from '../utility/error';
 
 const getRooms = asyncWrapper(async (req, res) => {
@@ -24,6 +25,14 @@ const getRooms = asyncWrapper(async (req, res) => {
   res.status(200).json(rooms);
 });
 
+const deleteRooms = asyncWrapper(async (req, res) => {
+  const { roomId } = req.body;
+  await Room.deleteOne({ _id: new Types.ObjectId(roomId) }).exec();
+  await Message.deleteMany({ roomId }).exec();
+  res.sendStatus(204);
+})
+
 export {
   getRooms,
+  deleteRooms,
 }

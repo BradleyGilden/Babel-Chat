@@ -4,10 +4,10 @@
   export let username;
 </script>
 
-{#if message.username === 'system'}
+{#if message?.system }
   <div class="chat chat-end">
     <div class="chat-header">
-      {message.username}
+      SYSTEM
       <time class="text-xs opacity-50">{dateFormatter(message.date)}</time>
     </div>
     <pre class="chat-bubble chat-bubble-warning">{message.text}</pre>

@@ -8,13 +8,14 @@
   import ThemeSelect from '../components/ThemeSelect.svelte';
   import Profile from '../components/Profile.svelte';
   import ChatBubbles from '../components/ChatBubbles.svelte';
+  import NameSpaces from '../components/NameSpaces.svelte'
 
   let userInfo = JSON.parse(localStorage.getItem('user'));
   let roomMembers = 0;
   let roomList = [];
   let listenRooms = new Set();
   let joinedRooms = new Set();
-  let currentRoom = 'Just Chatting';
+  let currentRoom =  localStorage.getItem('currentRoom') || 'Just Chatting';
   let currentText = '';
 
   $: messages = roomList.reduce((acc, room) => {
@@ -22,21 +23,25 @@
     return acc
   }, {});
 
+$: localStorage.setItem('currentRoom', currentRoom);
+
   const socket = io('http://localhost:3000');
 
   const roomListenerInit = (socket, roomList) => {
     for (const room of roomList) {
       if (!listenRooms.has(room.name)) {
+        socket.emit('ghost join', { currentRoom: room.name, username: userInfo.username });
+
         listenRooms = new Set([...listenRooms, room.name])
         socket.on(`${room.name}-status`, (message) => {
           roomMembers = message.numClients;
-          if (!joinedRooms.has(room.name)) {
+          if (!joinedRooms.has(room.name) || (joinedRooms.has(room.name) && userInfo.username !== message.username)) {
             message.text = `${message.username} has joined ${room.name}`
-            message.username = 'system';
-            messages[currentRoom].history = [...messages[currentRoom].history, message]
+            messages[room.name].history = [...messages[room.name].history, message]
           }
           joinedRooms = new Set([...joinedRooms, room.name]);
         });
+
         socket.on(`${room.name}-message`, (message) => {
           if (message.text) messages[message.currentRoom].history = [...messages[message.currentRoom].history, message];
         });
@@ -44,7 +49,8 @@
     }
   }
 
-  
+  $: roomListenerInit(socket, roomList);
+
   onMount(async () => {
     let response = await axios.get("http://localhost:3000/api/rooms", { params: {namespace: '/' }});
     roomList = response.data;
@@ -63,11 +69,17 @@
     currentText = '';
   }
 
+  const handleRoomDelete = async (roomId) => {
+    const id = roomId;
+    roomList = roomList.filter((room) => room.id !== roomId);
+    await axios.delete("http://localhost:3000/api/rooms", { data: { roomId: id } });
+  }
+
 </script>
 
 <div>
   <div class='flex w-full font-inter'>
-    <div class='w-1/5 h-screen max-h-screen bg-secondary-content'>
+    <div class='w-2/6 h-screen max-h-screen bg-secondary-content'>
       <header class='h-20 flex items-center gap-6'>
         <Profile moniker={userInfo.username[0].toUpperCase()} status={'online'} />
         <h2 class='text-2xl'>{userInfo.username}</h2>
@@ -75,36 +87,28 @@
       <a href="#/" class="btn btn-success w-full text-2xl">Settings</a>
       <div class="w-full flex">
         <!-- NameSpaces -->
-        <div class='w-[6.75rem] max-h-screen border-r-4 border-r-neutral mt-5 flex flex-col items-center gap-y-10'>
-          <div class="avatar global">
-            <div class="w-20 rounded-xl">
-              <img alt="namespace" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-            </div>
-          </div>
-          <div class="avatar">
-            <div class="w-20 rounded-xl">
-              <img alt="namespace" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-            </div>
-          </div>
-          <div class="avatar">
-            <div class="w-20 rounded-xl">
-              <img alt="namespace" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-            </div>
-          </div>
-        </div>
+        <NameSpaces />
         <!-- Room List -->
         <div class="my-5 flex flex-col gap-5 text-xl max-h-screen grow">
           {#each roomList as room (room.id)}
-          <button
-          class={room.name === currentRoom ? "btn w-[10rem] mx-auto btn-primary" : "btn w-[10rem] mx-auto"}
-          on:click={roomClickHandler}
-          >{room.name}</button>
+          <div class="w-full relative">
+            <button
+            class={room.name === currentRoom ? "btn w-[63%] ml-5 btn-primary" : "btn w-3/5 ml-5"}
+            on:click={roomClickHandler}
+            >{room.name}</button>
+            <button 
+            class="absolute hover:text-warning text-error right-[13%]"
+            on:click={ async () => { await handleRoomDelete(room.id) }}
+            >
+              <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4 8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8ZM7 5V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V5H22V7H2V5H7ZM9 4V5H15V4H9ZM9 12V18H11V12H9ZM13 12V18H15V12H13Z"></path></svg>
+            </button>
+          </div>
           {/each}
         </div>
       </div>
     </div>
 
-    <div class='w-4/5 h-screen flex flex-col'>
+    <div class='w-4/6 h-screen flex flex-col'>
       <header class='h-20 border-b-4 border-neutral mx-5 flex items-center'>
         <h2 class='text-3xl'>{currentRoom}</h2>
         <h3 class='text-center grow'>Members 0nline {roomMembers}</h3>
@@ -133,4 +137,16 @@
 </div>
 
 <style>
+*::-webkit-scrollbar {
+  width: 1rem; /* Optional, adjust width if needed */
+}
+
+*::-webkit-scrollbar-track {
+  background: #060715; /* Color of the track */
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #38BDF8; /* Color of the thumb */
+  border-radius: 20px; /* Roundness of the thumb */
+}
 </style>

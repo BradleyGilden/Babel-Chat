@@ -9,6 +9,7 @@ import {
   createUser,
   validateUser,
   getRooms,
+  deleteRooms,
 } from '../controllers';
 
 const baseRouter = express.Router();
@@ -20,6 +21,8 @@ baseRouter
 // User creation and authentication
 .post('/user/signup', createUser)
 .post('/user/login', validateUser)
-.get('/rooms', getRooms);
+// Room handlers
+.get('/rooms', getRooms)
+.delete('/rooms', deleteRooms);
 
 export default baseRouter;

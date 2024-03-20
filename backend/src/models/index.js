@@ -47,6 +47,7 @@ const userSchema = new mongoose.Schema({
     {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'Room',
+      onDelete: 'cascade',
     }
   ]
 });
@@ -75,7 +76,8 @@ const roomSchema = new mongoose.Schema({
   messages: [
     {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: 'Message'
+      ref: 'Message',
+      onDelete: 'cascade',
     }
   ],
   users: [
