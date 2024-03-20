@@ -5,7 +5,10 @@ import CustomError from '../utility/error';
 const getRooms = asyncWrapper(async (req, res) => {
   const { namespace } = req.query;
 
-  const response = await Room.find({ namespace }, 'name namespace messages').exec();
+  const response = await Room
+                        .find({ namespace }, 'name namespace messages')
+                        .populate('messages')
+                        .exec();
 
   if (!response) {
     throw new CustomError(`could not find any rooms in namespace: ${namespace}`, 404);

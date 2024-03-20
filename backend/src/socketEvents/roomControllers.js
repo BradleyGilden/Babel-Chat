@@ -1,3 +1,21 @@
+import { Room, Message } from '../models';
+import { Types } from 'mongoose';
+
+function updateMessage(messageObj) {
+  const message = new Message(messageObj);
+
+  message.save()
+          .then((savedMessage) => {
+            Room.findByIdAndUpdate(new Types.ObjectId(messageObj.roomId), {$push: { messages: savedMessage._id }})
+                .catch((err) => {
+                  console.log(err);
+                });
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+}
+
 const joinRoom = (io, socket) => {
   return (roomInfo) => {
     const roomName = roomInfo.currentRoom; // the sockets current room
@@ -16,8 +34,10 @@ const joinRoom = (io, socket) => {
 
 const roomMessage = (io) => {
   return  (messageInfo) => {
+    console.log(messageInfo)
     const roomName = messageInfo.currentRoom;
     messageInfo.date = new Date();
+    updateMessage(messageInfo);
     io.to(roomName).emit(`${roomName}-message`, {...messageInfo})
   }
 };

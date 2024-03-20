@@ -4,6 +4,19 @@
 
 import mongoose from 'mongoose';
 
+const messageSchema = new mongoose.Schema({
+  // Define properties for each message
+  // For example:
+  text: String,
+  translated: String,
+  date: Date,
+  currentRoom: String,
+  username: String,
+  roomId: String,
+  userId: String,
+  // Add other properties as needed
+});
+
 // create schema for a user
 const userSchema = new mongoose.Schema({
   username: {
@@ -59,7 +72,12 @@ const roomSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  messages: [ Object ],
+  messages: [
+    {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Message'
+    }
+  ],
   users: [
     {
       type: mongoose.SchemaTypes.ObjectId,
@@ -76,8 +94,10 @@ roomSchema.virtual('userCount').get(function() {
 // instantiate models for collections users and rooms
 const User = mongoose.model('User', userSchema);
 const Room = mongoose.model('Room', roomSchema);
+const Message = mongoose.model('Message', messageSchema);
 
 export {
   User,
-  Room
+  Room,
+  Message
 }

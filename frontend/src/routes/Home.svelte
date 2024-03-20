@@ -3,13 +3,12 @@
 
   import { onMount } from 'svelte';
   import { io } from 'socket.io-client';
+  import axios from 'axios';
   import { userData } from '../store';
   import ThemeSelect from '../components/ThemeSelect.svelte';
   import Profile from '../components/Profile.svelte';
-  import axios from 'axios';
   import ChatBubbles from '../components/ChatBubbles.svelte';
 
-  let rooms = {};
   let userInfo = JSON.parse(localStorage.getItem('user'));
   let roomMembers = 0;
   let roomList = [];
@@ -18,8 +17,8 @@
   let currentRoom = 'Just Chatting';
   let currentText = '';
 
-  $: messages = roomList.reduce((acc, key) => {
-    acc[key.name] = key.messages;
+  $: messages = roomList.reduce((acc, room) => {
+    acc[room.name] = {history: room.messages, roomId: room.id};
     return acc
   }, {});
 
@@ -34,12 +33,12 @@
           if (!joinedRooms.has(room.name)) {
             message.text = `${message.username} has joined ${room.name}`
             message.username = 'system';
-            messages[currentRoom] = [...messages[currentRoom], message]
+            messages[currentRoom].history = [...messages[currentRoom].history, message]
           }
           joinedRooms = new Set([...joinedRooms, room.name]);
         });
         socket.on(`${room.name}-message`, (message) => {
-          if (message.text) messages[message.currentRoom] = [...messages[message.currentRoom], message];
+          if (message.text) messages[message.currentRoom].history = [...messages[message.currentRoom].history, message];
         });
       }
     }
@@ -60,7 +59,7 @@
   }
 
   const handleSendMessage = (e) => {
-    socket.emit('room message', { currentRoom, username: userInfo.username, text: currentText });
+    socket.emit('room message', { currentRoom, username: userInfo.username, text: currentText, roomId: messages[currentRoom]?.roomId });
     currentText = '';
   }
 
@@ -115,8 +114,8 @@
       </header>
 
       <div id="MessageBlock" class="w-full grow max-h-[calc(100vh-10rem)] overflow-auto p-10 flex flex-col gap-y-5">
-        {#if Array.isArray(messages[currentRoom])}
-          {#each messages[currentRoom] as message }
+        {#if Array.isArray(messages[currentRoom]?.history)}
+          {#each messages[currentRoom].history as message, index (index) }
             <ChatBubbles {message} username={userInfo.username} />
           {/each}
         {/if}
