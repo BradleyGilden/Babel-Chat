@@ -9,21 +9,35 @@
   import Profile from '../components/Profile.svelte';
   import ChatBubbles from '../components/ChatBubbles.svelte';
   import NameSpaces from '../components/NameSpaces.svelte'
+  import AddRoomDialog from '../components/AddRoomDialog.svelte';
 
   let userInfo = JSON.parse(localStorage.getItem('user'));
+
+  // people present in current room
   let roomMembers = 0;
+  // room list
   let roomList = [];
+  // socket room checks
   let listenRooms = new Set();
   let joinedRooms = new Set();
+  // current room selected
   let currentRoom =  localStorage.getItem('currentRoom') || 'Just Chatting';
+
+  let currentNameSpace = '/';
+
+  // message input box test
   let currentText = '';
+
+  // qdd room dependancies
+  let addNewRoomName = '';
+  let loadingNewRoom = false;
 
   $: messages = roomList.reduce((acc, room) => {
     acc[room.name] = {history: room.messages, roomId: room.id};
     return acc
   }, {});
 
-$: localStorage.setItem('currentRoom', currentRoom);
+  $: localStorage.setItem('currentRoom', currentRoom);
 
   const socket = io('http://localhost:3000');
 
@@ -48,6 +62,16 @@ $: localStorage.setItem('currentRoom', currentRoom);
       }
     }
   }
+
+  socket.on('add room', (room) => {
+    // add room instantly only if on the current namespace
+    if (room.namespace === currentNameSpace ) roomList = [...roomList, room.newRoom];
+  });
+
+  socket.on('delete room', (obj) => {
+    // add room instantly only if on the current namespace
+    if (obj.username !== userInfo.username ) roomList = roomList.filter((room) => room.id !== obj.roomId);
+  });
 
   $: roomListenerInit(socket, roomList);
 
@@ -74,14 +98,24 @@ $: localStorage.setItem('currentRoom', currentRoom);
     const name = roomName;
     roomList = roomList.filter((room) => room.id !== roomId);
     // delete the room and all it's messages
-    await axios.delete("http://localhost:3000/api/rooms", { data: { roomId: id } });
+    await axios.delete("http://localhost:3000/api/rooms", { data: { roomId: id, username: userInfo.username } });
     // leave room connected by the server
     socket.emit('leave room', name);
   }
 
+  const handleRoomAdd = async () => {
+    loadingNewRoom = true;
+    await axios.post("http://localhost:3000/api/rooms", { roomName: addNewRoomName, namespace: '/' });
+    loadingNewRoom = false;
+  };
+
+  $: console.log(addNewRoomName);
+
 </script>
 
 <div>
+  <AddRoomDialog bind:addNewRoomName bind:loadingNewRoom on:click={handleRoomAdd}/>
+
   <div class='flex w-full font-inter'>
     <div class='w-2/6 h-screen max-h-screen bg-secondary-content'>
       <!-- ------------------------------------ Chat Header 1 ------------------------------------ -->
@@ -100,7 +134,7 @@ $: localStorage.setItem('currentRoom', currentRoom);
           <div class="bg-secondary-content relative text-primary flex w-full rounded-none text-xl border-t-primary border-b-primary gap-5 justify-center">
             Add Room
             <!-- ------------------------ Add room Button ----------------------- -->
-            <button class="h-8"> 
+            <button class="h-8" on:click={() => document.getElementById("add_room_modal").showModal()}> 
               <svg class="relative h-full text-primary hover:text-success" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM11 11H7V13H11V17H13V13H17V11H13V7H11V11Z"></path></svg>
             </button>
             <!-- ------------------------ /Add room Button ----------------------- -->

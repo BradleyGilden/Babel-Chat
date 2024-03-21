@@ -21,7 +21,7 @@
   <input
   type="checkbox"
   class="theme-controller"
-  value="nord"
+  value="cupcake"
   bind:checked={isDark}
   />
   <!-- sun icon -->

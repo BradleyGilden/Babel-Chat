@@ -10,6 +10,7 @@ import {
   validateUser,
   getRooms,
   deleteRooms,
+  createRoomsGlobal,
 } from '../controllers';
 
 const baseRouter = express.Router();
@@ -23,6 +24,7 @@ baseRouter
 .post('/user/login', validateUser)
 // Room handlers
 .get('/rooms', getRooms)
-.delete('/rooms', deleteRooms);
+.delete('/rooms', deleteRooms)
+.post('/rooms', createRoomsGlobal);
 
 export default baseRouter;

@@ -26,13 +26,35 @@ const getRooms = asyncWrapper(async (req, res) => {
 });
 
 const deleteRooms = asyncWrapper(async (req, res) => {
-  const { roomId } = req.body;
+  const { roomId, username } = req.body;
   await Room.deleteOne({ _id: new Types.ObjectId(roomId) }).exec();
+
+  global.io.emit('delete room', { roomId, username });
+
   await Message.deleteMany({ roomId }).exec();
   res.sendStatus(204);
+})
+
+const createRoomsGlobal = asyncWrapper(async (req, res) => {
+  const { roomName, namespace } = req.body;
+
+  const room = new Room({ name: roomName, namespace });
+  let newRoom = await room.save();
+  newRoom = {
+    name: newRoom.name,
+    id: String(newRoom.id),
+    messages: [],
+    users: [],
+    createdAt: newRoom.createdAt,
+    color: newRoom.color,
+  };
+  // emit room obj to new the required namespace
+  global.io.of(namespace).emit('add room', { newRoom, namespace });
+  res.sendStatus(201);
 })
 
 export {
   getRooms,
   deleteRooms,
+  createRoomsGlobal,
 }

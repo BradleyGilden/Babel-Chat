@@ -13,6 +13,6 @@ export default {
   },
   plugins: [require("daisyui")],
   daisyui: {
-    themes: ["night", "nord"],
+    themes: ["night", "cupcake"],
   },
 }

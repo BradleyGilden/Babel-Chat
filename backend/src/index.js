@@ -23,6 +23,9 @@ const io = socketio(server, {
   }
 });
 
+// initialize a global variable
+global.io = io;
+
 // Middleware declarations
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
