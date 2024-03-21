@@ -84,41 +84,54 @@ $: localStorage.setItem('currentRoom', currentRoom);
 <div>
   <div class='flex w-full font-inter'>
     <div class='w-2/6 h-screen max-h-screen bg-secondary-content'>
+      <!-- ------------------------------------ Chat Header 1 ------------------------------------ -->
       <header class='h-20 flex items-center gap-6'>
         <Profile moniker={userInfo.username[0].toUpperCase()} status={'online'} />
         <h2 class='text-2xl'>{userInfo.username}</h2>
       </header>
+      <!-- ------------------------------------ /Chat Header 1 ------------------------------------ -->
       <a href="#/" class="btn btn-secondary w-full text-2xl rounded-none">Settings</a>
       <div class="w-full flex">
-        <!-- NameSpaces -->
+        <!-- ------------------------------------ NameSpaces ------------------------------------ -->
         <NameSpaces />
+        <!-- ------------------------------------ /NameSpaces ------------------------------------ -->
         <!-- Room List -->
         <div class="my-5 flex flex-col gap-5 text-xl max-h-screen grow">
           <div class="bg-secondary-content relative text-primary flex w-full rounded-none text-xl border-t-primary border-b-primary gap-5 justify-center">
             Add Room
-            <button class="h-8">
-              <svg class="relative h-full text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM11 11H7V13H11V17H13V13H17V11H13V7H11V11Z"></path></svg>
+            <!-- ------------------------ Add room Button ----------------------- -->
+            <button class="h-8"> 
+              <svg class="relative h-full text-primary hover:text-success" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM11 11H7V13H11V17H13V13H17V11H13V7H11V11Z"></path></svg>
             </button>
+            <!-- ------------------------ /Add room Button ----------------------- -->
           </div>
+          <!-- -------------------------- Room List ----------------------------- -->
           {#each roomList as room (room.id)}
           <div class="w-full relative">
+            <!-- -------------------------- Switch Room ----------------------------- -->
             <button
-            class={room.name === currentRoom ? "btn w-[63%] ml-5 btn-primary" : "btn w-3/5 ml-5"}
+            class={room.name === currentRoom ? "btn w-[63%] ml-3 btn-primary" : "btn w-3/5 ml-5"}
             on:click={roomClickHandler}
             >{room.name}</button>
+            <!-- -------------------------- /Switch Room ----------------------------- -->
+
+            <!-- ------------------------- Delete Room Button -------------------------- -->
             <button 
             class="absolute hover:text-warning text-error right-[13%]"
             on:click={ async () => { await handleRoomDelete(room.id, room.name) }}
             >
               <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4 8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8ZM7 5V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V5H22V7H2V5H7ZM9 4V5H15V4H9ZM9 12V18H11V12H9ZM13 12V18H15V12H13Z"></path></svg>
             </button>
+            <!-- ------------------------- /Delete Room Button -------------------------- -->
           </div>
           {/each}
+          <!-- -------------------------- /Room List ----------------------------- -->
         </div>
       </div>
     </div>
 
     <div class='w-4/6 h-screen flex flex-col'>
+      <!-- ------------------------------------ Chat Header 2 ------------------------------------ -->
       <header class='h-20 border-b-4 border-neutral mx-5 flex items-center'>
         <h2 class='text-3xl'>{currentRoom}</h2>
         <h3 class='text-center grow'>Members 0nline {roomMembers}</h3>
@@ -126,7 +139,9 @@ $: localStorage.setItem('currentRoom', currentRoom);
           <ThemeSelect size={16} />
         </div>
       </header>
+      <!-- ------------------------------------ /Chat Header 2 ------------------------------------ -->
 
+      <!-- ------------------------------------ Message Block ------------------------------------ -->
       <div id="MessageBlock" class="w-full grow max-h-[calc(100vh-10rem)] overflow-auto p-10 flex flex-col gap-y-5">
         {#if Array.isArray(messages[currentRoom]?.history)}
           {#each messages[currentRoom].history as message, index (index) }
@@ -134,14 +149,17 @@ $: localStorage.setItem('currentRoom', currentRoom);
           {/each}
         {/if}
       </div>
+      <!-- ------------------------------------ /Message Block ------------------------------------ -->
 
 
+      <!-- ------------------------------------ Send Message Input ------------------------------------ -->
       <label class="h-20">
         <textarea class="textarea textarea-primary w-full text-xl" placeholder="Message" bind:value={currentText}></textarea>
         <button type="button" class="absolute w-5 h-5 z-10 mx-[-4rem] my-[1rem]" on:click={handleSendMessage}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 opacity-70"><path d="M1.94607 9.31543C1.42353 9.14125 1.4194 8.86022 1.95682 8.68108L21.043 2.31901C21.5715 2.14285 21.8746 2.43866 21.7265 2.95694L16.2733 22.0432C16.1223 22.5716 15.8177 22.59 15.5944 22.0876L11.9999 14L17.9999 6.00005L9.99992 12L1.94607 9.31543Z"></path></svg>
         </button>
       </label>
+      <!-- ------------------------------------ /Send Message Input ------------------------------------ -->
     </div>
   </div>
 </div>
