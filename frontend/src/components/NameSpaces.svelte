@@ -31,8 +31,8 @@
   </button>
   <button
   id="notifyNamespace"
-  data-ns="/notification"
-  class={ currentNameSpace === '/notification' && "bg-primary rounded-xl text-secondary-content" }
+  data-ns="/notify"
+  class={ currentNameSpace === '/notify' && "bg-primary rounded-xl text-secondary-content" }
   on:click={(e) => { currentNameSpace = document.getElementById("notifyNamespace").dataset.ns } }
   >
     <div class="avatar">

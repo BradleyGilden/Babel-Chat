@@ -41,6 +41,8 @@
   $: localStorage.setItem('currentRoom', currentRoom);
 
   const socket = io('http://localhost:3000');
+  const socketPrivate = io('http://localhost:3000/private');
+  const socketNotify = io('http://localhost:3000/notify');
 
   const roomListenerInit = (socket, roomList) => {
     for (const room of roomList) {
@@ -64,10 +66,7 @@
     }
   }
 
-  socket.on('add room', (room) => {
-    // add room instantly only if on the current namespace
-    if (room.namespace === currentNameSpace ) roomList = [...roomList, room.newRoom];
-  });
+  socket.on('add room', (room) => { roomList = [...roomList, room] });
 
   socket.on('delete room', (obj) => {
     // add room instantly only if on the current namespace

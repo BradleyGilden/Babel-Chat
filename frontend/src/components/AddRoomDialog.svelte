@@ -6,7 +6,7 @@
 
   const handleRoomAdd = async () => {
     loadingNewRoom = true;
-    await axios.post("http://localhost:3000/api/rooms", { roomName: addNewRoomName, namespace: '/' });
+    await axios.post("http://localhost:3000/api/rooms", { roomName: addNewRoomName });
     loadingNewRoom = false;
   };
 

@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import asyncWrapper from '../middleware/asyncWrapper';
-import { Room, Message } from '../models';
+import { Room, Message, User } from '../models';
 import CustomError from '../utility/error';
 
 const getRooms = asyncWrapper(async (req, res) => {
@@ -36,23 +36,53 @@ const deleteRooms = asyncWrapper(async (req, res) => {
 })
 
 const createRoomsGlobal = asyncWrapper(async (req, res) => {
-  const { roomName, namespace } = req.body;
+  const { roomName } = req.body;
 
-  const room = new Room({ name: roomName, namespace });
+  const room = new Room({ name: roomName, namespace: '/' });
   let newRoom = await room.save();
-  newRoom = {
+
+  // emit room obj to new the required namespace
+  global.io.of('/').emit('add room', {
     name: newRoom.name,
     id: String(newRoom.id),
     messages: [],
-    createdAt: newRoom.createdAt,
-  };
-  // emit room obj to new the required namespace
-  global.io.of(namespace).emit('add room', { newRoom, namespace });
+  });
   res.sendStatus(201);
 })
+
+const createRoomsPrivate = asyncWrapper(async (req, res) => {
+  const { roomName, userId, passcode } = req.body;
+
+  const room = new Room({ name: roomName, passcode, namespace: '/private' });
+
+  const newRoom = await room.save()
+  global.io.of('/private').emit('add room private', {
+    passcode: newRoom.passcode,
+    name: newRoom.name,
+    id: String(newRoom.id),
+    messages: [],
+  });
+  const user = await User.findById(new Types.ObjectId(userId)).exec();
+  user.rooms.push(newRoom._id);
+  await user.save();
+  res.sendStatus(201);
+});
+
+const getRoomsPrivate = asyncWrapper(async (req, res) => {
+  const { userId } = req.body;
+
+  const user = await User.findById(new Types.ObjectId(userId)).populate({
+    path: 'rooms',
+    populate: {
+      path: 'messages'
+    }
+  });
+
+});
 
 export {
   getRooms,
   deleteRooms,
   createRoomsGlobal,
+  createRoomsPrivate,
 }
