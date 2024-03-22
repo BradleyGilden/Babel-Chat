@@ -61,13 +61,10 @@ const roomSchema = new mongoose.Schema({
     maxLength: 20,
     trim: true,
   },
+  passcode: String,
   createdAt: {
     type: Date,
     default: () => Date.now(),
-  },
-  color: {
-    type: String,
-    default: () => "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0"),
   },
   namespace: {
     type: String,
@@ -80,12 +77,6 @@ const roomSchema = new mongoose.Schema({
       onDelete: 'cascade',
     }
   ],
-  users: [
-    {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: 'User',
-    }
-  ]
 })
 
 // virtual method to calculate number of Users in a room

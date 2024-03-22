@@ -44,9 +44,7 @@ const createRoomsGlobal = asyncWrapper(async (req, res) => {
     name: newRoom.name,
     id: String(newRoom.id),
     messages: [],
-    users: [],
     createdAt: newRoom.createdAt,
-    color: newRoom.color,
   };
   // emit room obj to new the required namespace
   global.io.of(namespace).emit('add room', { newRoom, namespace });
