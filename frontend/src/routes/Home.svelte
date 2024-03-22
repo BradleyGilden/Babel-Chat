@@ -10,6 +10,8 @@
   import ChatBubbles from '../components/ChatBubbles.svelte';
   import NameSpaces from '../components/NameSpaces.svelte'
   import AddRoomDialog from '../components/AddRoomDialog.svelte';
+  import RoomListComponent from '../components/RoomListComponent.svelte';
+  import SendInputComponent from '../components/SendInputComponent.svelte';
 
   let userInfo = JSON.parse(localStorage.getItem('user'));
 
@@ -150,25 +152,7 @@
             <!-- ------------------------ /Add room Button ----------------------- -->
           </div>
           <!-- -------------------------- Room List ----------------------------- -->
-          {#each roomList as room (room.id)}
-          <div class="w-full relative">
-            <!-- -------------------------- Switch Room ----------------------------- -->
-            <button
-            class={room.name === currentRoom ? "btn w-[63%] ml-3 btn-primary" : "btn w-3/5 ml-5"}
-            on:click={roomClickHandler}
-            >{room.name}</button>
-            <!-- -------------------------- /Switch Room ----------------------------- -->
-
-            <!-- ------------------------- Delete Room Button -------------------------- -->
-            <button 
-            class="absolute hover:text-warning text-error right-[13%]"
-            on:click={ async () => { await handleRoomDelete(room.id, room.name) }}
-            >
-              <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M4 8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8ZM7 5V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V5H22V7H2V5H7ZM9 4V5H15V4H9ZM9 12V18H11V12H9ZM13 12V18H15V12H13Z"></path></svg>
-            </button>
-            <!-- ------------------------- /Delete Room Button -------------------------- -->
-          </div>
-          {/each}
+          <RoomListComponent bind:roomList bind:currentRoom {roomClickHandler} {handleRoomDelete}/>
           <!-- -------------------------- /Room List ----------------------------- -->
         </div>
       </div>
@@ -195,14 +179,8 @@
       </div>
       <!-- ------------------------------------ /Message Block ------------------------------------ -->
 
-
       <!-- ------------------------------------ Send Message Input ------------------------------------ -->
-      <label class="h-20">
-        <textarea class="textarea textarea-primary w-full text-xl" placeholder="Message" bind:value={currentText}></textarea>
-        <button type="button" class="absolute w-5 h-5 z-10 mx-[-4rem] my-[1rem]" on:click={handleSendMessage}>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 opacity-70"><path d="M1.94607 9.31543C1.42353 9.14125 1.4194 8.86022 1.95682 8.68108L21.043 2.31901C21.5715 2.14285 21.8746 2.43866 21.7265 2.95694L16.2733 22.0432C16.1223 22.5716 15.8177 22.59 15.5944 22.0876L11.9999 14L17.9999 6.00005L9.99992 12L1.94607 9.31543Z"></path></svg>
-        </button>
-      </label>
+      <SendInputComponent on:click={handleSendMessage} bind:currentText />
       <!-- ------------------------------------ /Send Message Input ------------------------------------ -->
     </div>
   </div>
