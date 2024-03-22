@@ -2,7 +2,6 @@
   export let size;
   let isDark = JSON.parse(localStorage.getItem('isdark'));
   const changeTheme = (status) => {
-    console.log(status);
     localStorage.setItem('isdark', JSON.stringify(status));
   };
   // avoid activating upon initial render

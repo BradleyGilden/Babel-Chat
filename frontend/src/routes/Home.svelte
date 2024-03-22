@@ -21,7 +21,7 @@
   let listenRooms = new Set();
   let joinedRooms = new Set();
   // current room selected
-  let currentRoom =  localStorage.getItem('currentRoom') || 'Just Chatting';
+  let currentRoom =  localStorage.getItem('currentRoom') || roomList[0]?.name;
 
   let currentNameSpace = '/';
 
@@ -70,7 +70,13 @@
 
   socket.on('delete room', (obj) => {
     // add room instantly only if on the current namespace
-    if (obj.username !== userInfo.username ) roomList = roomList.filter((room) => room.id !== obj.roomId);
+    if (obj.username !== userInfo.username ) {
+      roomList = roomList.filter((room) => room.id !== obj.roomId);
+      if (obj.roomName === currentRoom) {
+        localStorage.setItem('currentRoom', roomList[0]?.name);
+        currentRoom = roomList[0]?.name;
+      }
+    } 
   });
 
   $: roomListenerInit(socket, roomList);
@@ -97,8 +103,12 @@
     const id = roomId;
     const name = roomName;
     roomList = roomList.filter((room) => room.id !== roomId);
+    if (name === currentRoom) {
+      localStorage.setItem('currentRoom', roomList[0]?.name);
+      currentRoom = roomList[0]?.name;
+    }
     // delete the room and all it's messages
-    await axios.delete("http://localhost:3000/api/rooms", { data: { roomId: id, username: userInfo.username } });
+    await axios.delete("http://localhost:3000/api/rooms", { data: { roomId: id, username: userInfo.username, roomName: name } });
     // leave room connected by the server
     socket.emit('leave room', name);
   }
@@ -127,7 +137,7 @@
       <a href="#/" class="btn btn-secondary w-full text-2xl rounded-none">Settings</a>
       <div class="w-full flex">
         <!-- ------------------------------------ NameSpaces ------------------------------------ -->
-        <NameSpaces />
+        <NameSpaces bind:currentNameSpace />
         <!-- ------------------------------------ /NameSpaces ------------------------------------ -->
         <!-- Room List -->
         <div class="my-5 flex flex-col gap-5 text-xl max-h-screen grow">

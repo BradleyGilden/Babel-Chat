@@ -26,10 +26,10 @@ const getRooms = asyncWrapper(async (req, res) => {
 });
 
 const deleteRooms = asyncWrapper(async (req, res) => {
-  const { roomId, username } = req.body;
+  const { roomId, username, roomName } = req.body;
   await Room.deleteOne({ _id: new Types.ObjectId(roomId) }).exec();
 
-  global.io.emit('delete room', { roomId, username });
+  global.io.emit('delete room', { roomId, username, roomName });
 
   await Message.deleteMany({ roomId }).exec();
   res.sendStatus(204);
