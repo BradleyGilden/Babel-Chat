@@ -5,7 +5,13 @@
 
 import { serverCheck, dbCheck } from './service';
 import { createUser, validateUser } from './user';
-import { getRooms, deleteRooms, createRoomsGlobal, createRoomsPrivate } from './rooms';
+import {
+  getRooms,
+  deleteRooms,
+  createRoomsGlobal,
+  createRoomsPrivate,
+  getRoomsPrivate,
+} from './rooms';
 
 export {
   serverCheck,

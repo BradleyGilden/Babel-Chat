@@ -26,3 +26,12 @@ content-type: application/json
 #### ---------------------- rooms -------------------------------------
 
 GET http://localhost:3000/api/rooms?namespace=/
+
+###
+
+POST http://localhost:3000/api/rooms/private
+{
+    "passcode": "YaXA9tes",
+    "userId": "lsdkfjd",
+    "roomName": "private convo",
+}

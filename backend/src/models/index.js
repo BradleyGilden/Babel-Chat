@@ -61,6 +61,7 @@ const roomSchema = new mongoose.Schema({
     trim: true,
   },
   passcode: String,
+  ownerId: String,
   createdAt: {
     type: Date,
     default: () => Date.now(),
