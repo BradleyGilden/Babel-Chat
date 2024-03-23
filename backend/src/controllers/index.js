@@ -11,6 +11,7 @@ import {
   createRoomsGlobal,
   createRoomsPrivate,
   getRoomsPrivate,
+  deleteRoomsPrivate,
 } from './rooms';
 
 export {
@@ -22,4 +23,6 @@ export {
   deleteRooms,
   createRoomsGlobal,
   createRoomsPrivate,
+  getRoomsPrivate,
+  deleteRoomsPrivate,
 };

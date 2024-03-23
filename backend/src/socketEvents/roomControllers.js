@@ -34,6 +34,7 @@ const joinRoom = (io, socket) => {
 
 const ghostJoin = (socket) => {
   return (roomInfo) => {
+    console.log(roomInfo)
     const roomName = roomInfo.currentRoom;
     socket.join(roomName);
   }
@@ -42,10 +43,14 @@ const ghostJoin = (socket) => {
 const roomMessage = (io) => {
   return  (messageInfo) => {
     console.log(messageInfo)
+
+    const namespace = messageInfo.namespace;
+    delete messageInfo.namespace
+
     const roomName = messageInfo.currentRoom;
     messageInfo.date = new Date();
     updateMessage(messageInfo);
-    io.to(roomName).emit(`${roomName}-message`, {...messageInfo})
+    io.of(namespace || '/').to(roomName).emit(`${roomName}-message`, {...messageInfo})
   }
 };
 

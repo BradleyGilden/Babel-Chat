@@ -11,6 +11,15 @@ const socketInit = (io) => {
 
     socket.on('room message', roomMessage(io));
   })
+
+  io.of('/private').on('connection', (socket) => {
+
+    socket.on('ghost join', ghostJoin(socket));
+
+    socket.on('leave room', leaveRoom(socket));
+
+    socket.on('room message', roomMessage(io));
+  })
 }
 
 export default socketInit;

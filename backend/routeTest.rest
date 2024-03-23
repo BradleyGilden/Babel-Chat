@@ -30,8 +30,12 @@ GET http://localhost:3000/api/rooms?namespace=/
 ###
 
 POST http://localhost:3000/api/rooms/private
+content-type: application/json
+
 {
-    "passcode": "YaXA9tes",
-    "userId": "lsdkfjd",
-    "roomName": "private convo",
+"passcode": "YaXA9tes", "userId": "65f6cc24eeb0ca5320c42704", "roomName": "privateRoom"
 }
+
+###
+
+GET http://localhost:3000/api/rooms/private?userId=65f6cc24eeb0ca5320c42704

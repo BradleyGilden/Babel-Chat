@@ -12,6 +12,8 @@ import {
   deleteRooms,
   createRoomsGlobal,
   createRoomsPrivate,
+  getRoomsPrivate,
+  deleteRoomsPrivate,
 } from '../controllers';
 
 const baseRouter = express.Router();
@@ -27,6 +29,8 @@ baseRouter
 .get('/rooms', getRooms)
 .delete('/rooms', deleteRooms)
 .post('/rooms', createRoomsGlobal)
-.post('/rooms/private', createRoomsPrivate);
+.post('/rooms/private', createRoomsPrivate)
+.get('/rooms/private', getRoomsPrivate)
+.delete('/rooms/private', deleteRoomsPrivate);
 
 export default baseRouter;

@@ -52,20 +52,21 @@ const createRoomsGlobal = asyncWrapper(async (req, res) => {
 
 const createRoomsPrivate = asyncWrapper(async (req, res) => {
   const { roomName, userId, passcode } = req.body;
-
+  console.log(roomName, userId, passcode)
   const room = new Room({ name: roomName, passcode, namespace: '/private', ownderId: userId });
 
   const newRoom = await room.save()
-  global.io.of('/private').emit('add room private', {
+
+  const user = await User.findById(new Types.ObjectId(userId)).exec();
+  user.rooms.push(newRoom._id);
+  await user.save();
+
+  res.status(201).json({
     passcode: newRoom.passcode,
     name: newRoom.name,
     id: String(newRoom.id),
     messages: [],
   });
-  const user = await User.findById(new Types.ObjectId(userId)).exec();
-  user.rooms.push(newRoom._id);
-  await user.save();
-  res.sendStatus(201);
 });
 
 const getRoomsPrivate = asyncWrapper(async (req, res) => {
@@ -83,21 +84,22 @@ const getRoomsPrivate = asyncWrapper(async (req, res) => {
       id: String(room._id),
       name: room.name,
       messages: room.messages,
+      passcode: room.passcode,
     };
   });
   res.status(200).json(rooms)
 });
 
 const deleteRoomsPrivate = asyncWrapper(async (req, res) => {
-  const { roomId, userId } = req.body;
+  const { roomId, userId, roomName } = req.body;
 
-  const room = await Room.findById(Types.ObjectId(roomId))
+  const room = await Room.findById(new Types.ObjectId(roomId)).exec()
   if (room.ownerId === userId) {
-    await room.remove();
+    await room.deleteOne();
     await Message.deleteMany({ roomId }).exec();
-    global.io.emit('delete room private', { roomId });
+    global.io.of("/private").emit('delete room', { roomId, userId, roomName });
   } else {
-    const user = await User.findById(Types.ObjectId(userId));
+    const user = await User.findById(new Types.ObjectId(userId)).exec();
     user.rooms = user.rooms.filter((room) => String(room._id) !== roomId);
     await user.save();
   }
