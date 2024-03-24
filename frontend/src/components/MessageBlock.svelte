@@ -1,6 +1,8 @@
 <script>
+  import { onMount } from 'svelte';
   import ChatBubbles from './ChatBubbles.svelte';
 
+  export let messageBlock;
   export let messages = [];
   export let privateMessages = [];
   export let currentRoom = '';
@@ -16,9 +18,16 @@
     }
   }
 
+  onMount(() => {
+    setTimeout(() => {
+      messageBlock.focus();
+      messageBlock.scrollTo(0, messageBlock.scrollHeight)
+    }, 1000)
+  });
+
 </script>
 
-<div id="MessageBlock" class="w-full grow max-h-[calc(100vh-10rem)] overflow-auto p-10 flex flex-col gap-y-5">
+<div bind:this={messageBlock} id="MessageBlock" class="w-full grow max-h-[calc(100vh-10rem)] overflow-auto p-10 flex flex-col gap-y-5">
   {#if Array.isArray(visibleMessages[currentRoom]?.history)}
     {#each visibleMessages[currentRoom].history as message, index (message._id || index) }
       <ChatBubbles {message} {username} />

@@ -28,6 +28,7 @@
   let listenRooms = new Set();
   let joinedRooms = new Set();
   let listenPrivateRooms = new Set();
+  let messageBlock;
 
   // current room selected
   let currentRoom =  localStorage.getItem('currentRoom') || roomList[0]?.name;
@@ -79,7 +80,6 @@
 
   const privateRoomListenerInit = (privateSocket, privateRoomList) => {
     for (const privateRoom of privateRoomList) {
-      console.log({ currentRoom: privateRoom.name, username: userInfo.username })
       privateSocket.emit('ghost join', { currentRoom: privateRoom.name, username: userInfo.username });
       if (!listenPrivateRooms.has(privateRoom.name)) {
         listenPrivateRooms = new Set([...listenPrivateRooms, privateRoom.name])
@@ -127,6 +127,16 @@
       }
     }
     fetchRoomData();
+  };
+
+  $: if (currentRoom) {
+    console.log(messageBlock)
+    if (messageBlock) {
+      setTimeout(() => {
+        messageBlock.focus();
+        messageBlock.scrollTo(0, messageBlock.scrollHeight)
+      }, 200)
+    };
   };
 
   onMount(async () => {
@@ -245,7 +255,7 @@
       <!-- ------------------------------------ /Chat Header 2 ------------------------------------ -->
 
       <!-- ------------------------------------ Message Block ------------------------------------ -->
-      <MessageBlock bind:currentNameSpace bind:privateMessages bind:messages bind:currentRoom />
+      <MessageBlock bind:messageBlock bind:currentNameSpace bind:privateMessages bind:messages bind:currentRoom />
       <!-- ------------------------------------ /Message Block ------------------------------------ -->
 
       <!-- ------------------------------------ Send Message Input ------------------------------------ -->
