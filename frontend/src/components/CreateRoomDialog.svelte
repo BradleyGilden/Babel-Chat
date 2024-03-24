@@ -8,10 +8,16 @@
   let addNewRoomName = '';
   let loadingNewRoom = false;
   let passcode = nanoid(8);
+  let copyLabel = 'copy';
   const { id } = JSON.parse(localStorage.getItem('user'));
 
   const regeneratePass = (_e) => {
     passcode = nanoid(8);
+  }
+
+  const copyToClipboard = () => {
+    copyLabel = 'copied !';
+    navigator.clipboard.writeText(passcode);
   }
 
   const handleCreateRoom = async () => {
@@ -39,7 +45,7 @@
       />
       <div class="flex items-center gap-2 w-full">
         <p class="font-bold">Pass Code: <span class="text-accent">{passcode}</span></p> 
-        <button class="btn btn-sm" on:click={navigator.clipboard.writeText(passcode)}>copy</button>
+        <button class="btn btn-sm" on:click={copyToClipboard} on:mouseleave={() => {copyLabel = 'copy'}}>{copyLabel}</button>
         <button class="absolute btn btn-sm btn-success right-[10rem]" on:click={regeneratePass}>regen</button>
       </div>
       <button 

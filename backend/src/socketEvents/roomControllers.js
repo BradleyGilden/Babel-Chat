@@ -34,7 +34,7 @@ const joinRoom = (io, socket) => {
 
 const ghostJoin = (socket) => {
   return (roomInfo) => {
-    console.log(roomInfo)
+    console.log('ghost join', roomInfo)
     const roomName = roomInfo.currentRoom;
     socket.join(roomName);
   }

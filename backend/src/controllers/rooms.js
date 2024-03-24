@@ -52,8 +52,8 @@ const createRoomsGlobal = asyncWrapper(async (req, res) => {
 
 const createRoomsPrivate = asyncWrapper(async (req, res) => {
   const { roomName, userId, passcode } = req.body;
-  console.log(roomName, userId, passcode)
-  const room = new Room({ name: roomName, passcode, namespace: '/private', ownderId: userId });
+
+  const room = new Room({ name: roomName, passcode, namespace: '/private', ownerId: userId });
 
   const newRoom = await room.save()
 
@@ -66,7 +66,27 @@ const createRoomsPrivate = asyncWrapper(async (req, res) => {
     name: newRoom.name,
     id: String(newRoom.id),
     messages: [],
+    ownerId: newRoom.ownerId,
   });
+});
+
+const joinRoomsPrivate = asyncWrapper(async (req, res) => {
+  const { roomName, passcode, userId } = req.body;
+
+  const room = await Room.findOne({ name: roomName, passcode }).exec();
+
+  if (!room) throw new CustomError("Room name and password does not match", 401);
+  if (!room.ownerId === userId) throw new CustomError(`You already own ${room.name}`, 401);
+
+  await User.findByIdAndUpdate(new Types.ObjectId(userId), { $push: { rooms: room._id }}).exec();
+
+  res.status(200).json({
+    passcode: room.passcode,
+    name: room.name,
+    id: String(room._id),
+    messages: room.messages,
+    ownerId: room.ownerId,
+  })
 });
 
 const getRoomsPrivate = asyncWrapper(async (req, res) => {
@@ -85,6 +105,7 @@ const getRoomsPrivate = asyncWrapper(async (req, res) => {
       name: room.name,
       messages: room.messages,
       passcode: room.passcode,
+      ownerId: room.ownerId,
     };
   });
   res.status(200).json(rooms)
@@ -92,12 +113,14 @@ const getRoomsPrivate = asyncWrapper(async (req, res) => {
 
 const deleteRoomsPrivate = asyncWrapper(async (req, res) => {
   const { roomId, userId, roomName } = req.body;
-
   const room = await Room.findById(new Types.ObjectId(roomId)).exec()
   if (room.ownerId === userId) {
     await room.deleteOne();
     await Message.deleteMany({ roomId }).exec();
     global.io.of("/private").emit('delete room', { roomId, userId, roomName });
+    const user = await User.findById(new Types.ObjectId(userId)).exec();
+    user.rooms = user.rooms.filter((room) => String(room._id) !== roomId);
+    await user.save();
   } else {
     const user = await User.findById(new Types.ObjectId(userId)).exec();
     user.rooms = user.rooms.filter((room) => String(room._id) !== roomId);
@@ -114,4 +137,5 @@ export {
   createRoomsPrivate,
   getRoomsPrivate,
   deleteRoomsPrivate,
+  joinRoomsPrivate,
 }

@@ -79,8 +79,9 @@
 
   const privateRoomListenerInit = (privateSocket, privateRoomList) => {
     for (const privateRoom of privateRoomList) {
+      console.log({ currentRoom: privateRoom.name, username: userInfo.username })
+      privateSocket.emit('ghost join', { currentRoom: privateRoom.name, username: userInfo.username });
       if (!listenPrivateRooms.has(privateRoom.name)) {
-        privateSocket.emit('ghost join', { currentRoom: privateRoom.name, username: userInfo.username });
         listenPrivateRooms = new Set([...listenPrivateRooms, privateRoom.name])
         privateSocket.on(`${privateRoom.name}-message`, (message) => {
           if (message.text) privateMessages[message.currentRoom].history = [...privateMessages[message.currentRoom].history, message];
@@ -115,18 +116,28 @@
   $: roomListenerInit(socket, roomList);
   $: privateRoomListenerInit(socketPrivate, privateRoomList);
 
+  $: {
+    async function fetchRoomData() {
+      if (currentNameSpace === '/') {
+        let response = await axios.get("http://localhost:3000/api/rooms", { params: {namespace: '/' }});
+        roomList = response.data;
+      } else {
+        let privateResponse = await axios.get("http://localhost:3000/api/rooms/private", { params: { userId: userInfo.id }});
+        privateRoomList = privateResponse.data;
+      }
+    }
+    fetchRoomData();
+  };
+
   onMount(async () => {
     let response = await axios.get("http://localhost:3000/api/rooms", { params: {namespace: '/' }});
     roomList = response.data;
     roomListenerInit(socket, roomList);
     socket.emit('join room', { currentRoom, username: userInfo.username });
-    console.log('connected');
 
     let privateResponse = await axios.get("http://localhost:3000/api/rooms/private", { params: { userId: userInfo.id }});
     privateRoomList = privateResponse.data;
-    for (const privateRoom of privateRoomList) {
-      socketPrivate.emit('ghost join', { currentRoom: privateRoom.name, username: userInfo.username });
-    }
+    privateRoomListenerInit(socketPrivate, privateRoomList);
   });
 
   const roomClickHandler = (e) => {
@@ -170,7 +181,7 @@
       currentRoom = privateRoomList[0]?.name;
     }
     // delete the room and all it's messages
-    await axios.delete("http://localhost:3000/api/rooms/private", { data: { roomId: id, username: userInfo.username, roomName: name } });
+    await axios.delete("http://localhost:3000/api/rooms/private", { data: { roomId: id, userId: userInfo.id, roomName: name } });
     // leave room connected by the server
     socket.emit('leave room', name);
   }
@@ -179,7 +190,7 @@
 <div>
   <AddRoomDialog />
   <CreateRoomDialog bind:privateRoomList />
-  <JoinRoomDialog />
+  <JoinRoomDialog bind:privateRoomList />
 
   <div class='flex w-full font-inter'>
     <div class='w-2/6 h-screen max-h-screen bg-secondary-content'>
