@@ -27,14 +27,9 @@
   // people present in current room
   let roomMembers = 0;
   // global room values
-  let roomList = [];
-  let listenRooms = new Set();
-  let joinedRooms = new Set();
-
+  let roomList = [], listenRooms = new Set(), joinedRooms = new Set();
   // private room values
-  let privateRoomList = [];
-  let listenPrivateRooms = new Set();
-  let passcode = '';
+  let privateRoomList = [], listenPrivateRooms = new Set(), passcode = '';
   
   // reference to div elements containing messages
   let messageBlock;
@@ -47,6 +42,8 @@
 
   // sendInvite dialog
   let inviteCode = '', inviteUser = '', inviteRoom = '';
+
+  let notifyMessages = [];
 
   $: messages = roomList.reduce((acc, room) => {
     acc[room.name] = {history: room.messages, roomId: room.id};
@@ -65,6 +62,14 @@
   let socket = io('http://localhost:3000');
   let socketPrivate = io('http://localhost:3000/private');
   let socketNotify = io('http://localhost:3000/notify');
+
+  const notificationListenerInit = (socketNotify, notifyMessages) => {
+    console.log('activated');
+    socketNotify.on(`${userInfo.username}-notifications`, (notifications) => {
+      console.log('notification sent', notifications)
+      notifyMessages = [...notifyMessages, notifications]
+    })
+  }
 
   const roomListenerInit = (socket, roomList) => {
     for (const room of roomList) {
@@ -131,9 +136,12 @@
       if (currentNameSpace === '/') {
         let response = await axios.get("http://localhost:3000/api/rooms", { params: {namespace: '/' }});
         roomList = response.data;
-      } else {
+      } else if (currentNameSpace === '/private') {
         let privateResponse = await axios.get("http://localhost:3000/api/rooms/private", { params: { userId: userInfo.id }});
         privateRoomList = privateResponse.data;
+      } else {
+        let notifyResponse = await axios.get("http://localhost:3000/api/notifications", { params: { username: userInfo.username }})
+        notifyMessages = notifyResponse.data;
       }
     }
     fetchRoomData();
@@ -157,6 +165,10 @@
     let privateResponse = await axios.get("http://localhost:3000/api/rooms/private", { params: { userId: userInfo.id }});
     privateRoomList = privateResponse.data;
     privateRoomListenerInit(socketPrivate, privateRoomList);
+
+    let notifyResponse = await axios.get("http://localhost:3000/api/notifications", { params: { username: userInfo.username }})
+    notifyMessages = notifyResponse.data;
+    notificationListenerInit(socketNotify, notifyMessages);
   });
 
   const roomClickHandler = (e) => {
@@ -164,7 +176,7 @@
     if (e.target?.dataset?.passcode) {
       passcode = e.target.dataset.passcode;
     } else {
-      passcode = ''
+      passcode = '';
     }
     if (currentNameSpace === "/") { 
       socket.emit('join room', { currentRoom, username: userInfo.username });
@@ -209,6 +221,8 @@
     // leave room connected by the server
     socket.emit('leave room', name);
   }
+
+  $: console.log(notifyMessages)
 </script>
 
 <div>
@@ -234,7 +248,7 @@
         <div class="my-5 flex flex-col gap-5 text-xl max-h-screen grow">
           {#if currentNameSpace === '/'}
           <AddRoomButton />
-          {:else}
+          {:else if currentNameSpace === '/private'}
           <div class="join w-full rounded-none">
             <button
               class="btn btn-success join-item text-xl w-1/2"
@@ -250,7 +264,7 @@
           <!-- -------------------------- Room List ----------------------------- -->
           {#if currentNameSpace === '/'}
           <RoomListComponent bind:roomList bind:currentRoom {roomClickHandler} {handleRoomDelete}/>
-          {:else}
+          {:else if currentNameSpace === '/private'}
           <PrivateRoomListComponent bind:inviteRoom bind:inviteCode bind:privateRoomList bind:currentRoom {roomClickHandler} {handlePrivateRoomDelete}/>
           {/if}
           <!-- -------------------------- /Room List ----------------------------- -->
@@ -270,7 +284,7 @@
       <!-- ------------------------------------ /Chat Header 2 ------------------------------------ -->
 
       <!-- ------------------------------------ Message Block ------------------------------------ -->
-      <MessageBlock bind:messageBlock bind:currentNameSpace bind:privateMessages bind:messages bind:currentRoom />
+      <MessageBlock bind:messageBlock bind:currentNameSpace bind:notifyMessages bind:privateMessages bind:messages bind:currentRoom />
       <!-- ------------------------------------ /Message Block ------------------------------------ -->
 
       <!-- ------------------------------------ Send Message Input ------------------------------------ -->

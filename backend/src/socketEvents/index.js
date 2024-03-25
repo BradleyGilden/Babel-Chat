@@ -1,4 +1,4 @@
-import { joinRoom, roomMessage, ghostJoin, leaveRoom } from './roomControllers';
+import { joinRoom, roomMessage, ghostJoin, leaveRoom, notificationMessage } from './roomControllers';
 
 const socketInit = (io) => {
   io.on('connection', (socket) => {
@@ -10,7 +10,7 @@ const socketInit = (io) => {
     socket.on('leave room', leaveRoom(socket));
 
     socket.on('room message', roomMessage(io));
-  })
+  });
 
   io.of('/private').on('connection', (socket) => {
 
@@ -19,7 +19,11 @@ const socketInit = (io) => {
     socket.on('leave room', leaveRoom(socket));
 
     socket.on('room message', roomMessage(io));
-  })
+  });
+
+  io.of('/notify').on('connection', (socket) => {
+    socket.on('send notification', notificationMessage(io));
+  });
 }
 
 export default socketInit;

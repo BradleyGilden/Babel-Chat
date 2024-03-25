@@ -1,7 +1,7 @@
 <script>
 // @ts-nocheck
 
-  export let currentNameSpace = '/';
+  export let currentNameSpace;
 </script>
 
 <div class='w-[6.75rem] max-h-screen border-r-4 border-r-neutral mt-5 flex flex-col items-center gap-y-10'>

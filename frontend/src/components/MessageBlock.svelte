@@ -5,6 +5,7 @@
   export let messageBlock;
   export let messages = [];
   export let privateMessages = [];
+  export let notifyMessages = [];
   export let currentRoom = '';
   export let currentNameSpace = '/';
   let visibleMessages = [];
@@ -13,8 +14,10 @@
   $: {
     if (currentNameSpace === '/') {
       visibleMessages = messages;
-    } else {
+    } else if (currentNameSpace === '/private') {
       visibleMessages = privateMessages;
+    } else {
+      visibleMessages = notifyMessages;
     }
   }
 
@@ -31,6 +34,10 @@
   {#if Array.isArray(visibleMessages[currentRoom]?.history)}
     {#each visibleMessages[currentRoom].history as message, index (message._id || index) }
       <ChatBubbles {message} {username} />
+    {/each}
+  {:else if currentNameSpace === '/notify'}
+    {#each visibleMessages as message, index (message._id || index) }
+      <ChatBubbles {message} username={'SYSTEM'} system={true} />
     {/each}
   {/if}
 </div>

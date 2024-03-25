@@ -5,12 +5,13 @@
   export let inviteRoom = '';
   export let socketNotify;
   let { username } = JSON.parse(localStorage.getItem('user'));
-  export let greeting = `${username} invites you to join them in a private chat`;
-  const handleSendInvite= () => {
-  };
-
+  let greeting = `${username} invites you to join them in a private chat`;
+  
   $: inviteText = `${greeting}\nRoom: ${inviteRoom}\nCode: ${inviteCode}`
-
+  
+  const handleSendInvite= () => {
+    socketNotify.emit('send notification', { username: inviteUser, text: inviteText })
+  };
 </script>
 
 <dialog id="send_invite_modal" class="modal">

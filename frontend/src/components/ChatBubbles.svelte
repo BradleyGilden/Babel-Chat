@@ -2,9 +2,10 @@
   import dateFormatter from '../utility/dateHandler';
   export let message;
   export let username;
+  export let system = false;
 </script>
 
-{#if message?.system }
+{#if message?.system || system}
   <div class="chat chat-end">
     <div class="chat-header">
       SYSTEM

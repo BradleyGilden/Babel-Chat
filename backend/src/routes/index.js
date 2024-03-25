@@ -15,6 +15,7 @@ import {
   getRoomsPrivate,
   deleteRoomsPrivate,
   joinRoomsPrivate,
+  getNotifications,
 } from '../controllers';
 
 const baseRouter = express.Router();
@@ -33,6 +34,8 @@ baseRouter
 .post('/rooms/private', createRoomsPrivate)
 .get('/rooms/private', getRoomsPrivate)
 .delete('/rooms/private', deleteRoomsPrivate)
-.post('/rooms/private/join', joinRoomsPrivate);
+.post('/rooms/private/join', joinRoomsPrivate)
+// Notification handler
+.get('/notifications', getNotifications);
 
 export default baseRouter;

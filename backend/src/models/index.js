@@ -10,6 +10,7 @@ const messageSchema = new mongoose.Schema({
   text: String,
   translated: String,
   date: Date,
+  nanoId: String,
   currentRoom: String,
   username: String,
   roomId: String,

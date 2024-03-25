@@ -1,20 +1,4 @@
-import { Room, Message } from '../models';
-import { Types } from 'mongoose';
-
-function updateMessage(messageObj) {
-  const message = new Message(messageObj);
-
-  message.save()
-          .then((savedMessage) => {
-            Room.findByIdAndUpdate(new Types.ObjectId(messageObj.roomId), {$push: { messages: savedMessage._id }})
-                .catch((err) => {
-                  console.log(err);
-                });
-          })
-          .catch((err) => {
-            console.log(err);
-          })
-}
+import { updateMessage, updateNotification } from './helpers';
 
 const joinRoom = (io, socket) => {
   return (roomInfo) => {
@@ -29,7 +13,7 @@ const joinRoom = (io, socket) => {
     // establishes a date for time the message was sent
     roomInfo.date = new Date();
     io.to(roomName).emit(`${roomName}-status`, { socketId: socket.id, numClients: numClientsInRoom, system: true, ...roomInfo})
-  }
+  };
 };
 
 const ghostJoin = (socket) => {
@@ -37,8 +21,8 @@ const ghostJoin = (socket) => {
     console.log('ghost join', roomInfo)
     const roomName = roomInfo.currentRoom;
     socket.join(roomName);
-  }
-}
+  };
+};
 
 const roomMessage = (io) => {
   return  (messageInfo) => {
@@ -50,19 +34,30 @@ const roomMessage = (io) => {
     const roomName = messageInfo.currentRoom;
     messageInfo.date = new Date();
     updateMessage(messageInfo);
-    io.of(namespace || '/').to(roomName).emit(`${roomName}-message`, {...messageInfo})
-  }
+    io.of(namespace || '/').to(roomName).emit(`${roomName}-message`, messageInfo);
+  };
+};
+
+const notificationMessage = (io) => {
+  return (notification) => {
+    notification.date = new Date();
+    console.log(notification)
+    updateNotification(notification);
+    const { username } = notification;
+    io.of('/notify').emit(`${username}-notifications`, notification);
+  };
 };
 
 const leaveRoom = (socket) => {
   return (roomName) => {
     socket.leave(roomName);
-  }
-}
+  };
+};
 
 export {
   joinRoom,
   roomMessage,
   ghostJoin,
   leaveRoom,
+  notificationMessage,
 }
