@@ -5,7 +5,7 @@
   export let messageBlock;
   export let messages = [];
   export let privateMessages = [];
-  export let notifyMessages = [];
+  export let notificationMessages = [];
   export let currentRoom = '';
   export let currentNameSpace = '/';
   let visibleMessages = [];
@@ -17,7 +17,7 @@
     } else if (currentNameSpace === '/private') {
       visibleMessages = privateMessages;
     } else {
-      visibleMessages = notifyMessages;
+      visibleMessages = notificationMessages;
     }
   }
 

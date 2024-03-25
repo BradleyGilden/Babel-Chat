@@ -45,6 +45,8 @@
 
   let notifyMessages = [];
 
+  $: notificationMessages = notifyMessages;
+
   $: messages = roomList.reduce((acc, room) => {
     acc[room.name] = {history: room.messages, roomId: room.id};
     return acc
@@ -63,11 +65,10 @@
   let socketPrivate = io('http://localhost:3000/private');
   let socketNotify = io('http://localhost:3000/notify');
 
-  const notificationListenerInit = (socketNotify, notifyMessages) => {
+  const notificationListenerInit = (socketNotify) => {
     console.log('activated');
     socketNotify.on(`${userInfo.username}-notifications`, (notifications) => {
-      console.log('notification sent', notifications)
-      notifyMessages = [...notifyMessages, notifications]
+      notificationMessages = [...notificationMessages, notifications]
     })
   }
 
@@ -168,7 +169,7 @@
 
     let notifyResponse = await axios.get("http://localhost:3000/api/notifications", { params: { username: userInfo.username }})
     notifyMessages = notifyResponse.data;
-    notificationListenerInit(socketNotify, notifyMessages);
+    notificationListenerInit(socketNotify);
   });
 
   const roomClickHandler = (e) => {
@@ -221,8 +222,6 @@
     // leave room connected by the server
     socket.emit('leave room', name);
   }
-
-  $: console.log(notifyMessages)
 </script>
 
 <div>
@@ -284,7 +283,7 @@
       <!-- ------------------------------------ /Chat Header 2 ------------------------------------ -->
 
       <!-- ------------------------------------ Message Block ------------------------------------ -->
-      <MessageBlock bind:messageBlock bind:currentNameSpace bind:notifyMessages bind:privateMessages bind:messages bind:currentRoom />
+      <MessageBlock bind:messageBlock bind:currentNameSpace bind:notificationMessages bind:privateMessages bind:messages bind:currentRoom />
       <!-- ------------------------------------ /Message Block ------------------------------------ -->
 
       <!-- ------------------------------------ Send Message Input ------------------------------------ -->
