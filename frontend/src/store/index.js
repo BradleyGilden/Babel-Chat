@@ -4,8 +4,6 @@
 import { writable } from 'svelte/store';
 
 const userData = writable(null);
-const messagesStore = writable([]);
-const roomsStore = writable([]);
 
 export {
   userData,

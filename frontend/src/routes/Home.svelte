@@ -1,42 +1,52 @@
 <script>
 // @ts-nocheck
-
+  // tools
   import { onMount } from 'svelte';
   import { io } from 'socket.io-client';
   import axios from 'axios';
+  // data
   import { userData } from '../store';
+  // display components
   import ThemeSelect from '../components/ThemeSelect.svelte';
   import Profile from '../components/Profile.svelte';
   import MessageBlock from '../components/MessageBlock.svelte';
   import NameSpaces from '../components/NameSpaces.svelte';
   import RoomListComponent from '../components/RoomListComponent.svelte';
+  import PrivateRoomListComponent from '../components/PrivateRoomListComponent.svelte';
+  // action components
   import SendInputComponent from '../components/SendInputComponent.svelte';
   import AddRoomButton from '../components/AddRoomButton.svelte';
-  import AddRoomDialog from '../components/AddRoomDialog.svelte';
+  // dialogs
   import CreateRoomDialog from '../components/CreateRoomDialog.svelte';
+  import AddRoomDialog from '../components/AddRoomDialog.svelte';
   import JoinRoomDialog from '../components/JoinRoomDialog.svelte';
-  import PrivateRoomListComponent from '../components/PrivateRoomListComponent.svelte';
+  import SendInviteDialog from '../components/SendInviteDialog.svelte';
 
   let userInfo = JSON.parse(localStorage.getItem('user'));
 
   // people present in current room
   let roomMembers = 0;
-  // room list
+  // global room values
   let roomList = [];
-  let privateRoomList = [];
-  // socket room checks
   let listenRooms = new Set();
   let joinedRooms = new Set();
-  let listenPrivateRooms = new Set();
-  let messageBlock;
 
+  // private room values
+  let privateRoomList = [];
+  let listenPrivateRooms = new Set();
+  let passcode = '';
+  
+  // reference to div elements containing messages
+  let messageBlock;
+  
   // current room selected
   let currentRoom =  localStorage.getItem('currentRoom') || roomList[0]?.name;
-
   let currentNameSpace = localStorage.getItem('currentNameSpace') || '/';
-
   // message input box test
   let currentText = '';
+
+  // sendInvite dialog
+  let inviteCode = '', inviteUser = '', inviteRoom = '';
 
   $: messages = roomList.reduce((acc, room) => {
     acc[room.name] = {history: room.messages, roomId: room.id};
@@ -52,9 +62,9 @@
 
   $: localStorage.setItem('currentNameSpace', currentNameSpace);
 
-  const socket = io('http://localhost:3000');
-  const socketPrivate = io('http://localhost:3000/private');
-  const socketNotify = io('http://localhost:3000/notify');
+  let socket = io('http://localhost:3000');
+  let socketPrivate = io('http://localhost:3000/private');
+  let socketNotify = io('http://localhost:3000/notify');
 
   const roomListenerInit = (socket, roomList) => {
     for (const room of roomList) {
@@ -130,7 +140,6 @@
   };
 
   $: if (currentRoom) {
-    console.log(messageBlock)
     if (messageBlock) {
       setTimeout(() => {
         messageBlock.focus();
@@ -152,6 +161,11 @@
 
   const roomClickHandler = (e) => {
     currentRoom = e.target.textContent;
+    if (e.target?.dataset?.passcode) {
+      passcode = e.target.dataset.passcode;
+    } else {
+      passcode = ''
+    }
     if (currentNameSpace === "/") { 
       socket.emit('join room', { currentRoom, username: userInfo.username });
     } else {
@@ -201,6 +215,7 @@
   <AddRoomDialog />
   <CreateRoomDialog bind:privateRoomList />
   <JoinRoomDialog bind:privateRoomList />
+  <SendInviteDialog bind:socketNotify bind:inviteRoom bind:inviteCode bind:inviteUser />
 
   <div class='flex w-full font-inter'>
     <div class='w-2/6 h-screen max-h-screen bg-secondary-content'>
@@ -236,7 +251,7 @@
           {#if currentNameSpace === '/'}
           <RoomListComponent bind:roomList bind:currentRoom {roomClickHandler} {handleRoomDelete}/>
           {:else}
-          <PrivateRoomListComponent bind:privateRoomList bind:currentRoom {roomClickHandler} {handlePrivateRoomDelete}/>
+          <PrivateRoomListComponent bind:inviteRoom bind:inviteCode bind:privateRoomList bind:currentRoom {roomClickHandler} {handlePrivateRoomDelete}/>
           {/if}
           <!-- -------------------------- /Room List ----------------------------- -->
         </div>
@@ -246,7 +261,7 @@
     <div class='w-4/6 h-screen flex flex-col'>
       <!-- ------------------------------------ Chat Header 2 ------------------------------------ -->
       <header class='h-20 border-b-4 border-neutral mx-5 flex items-center'>
-        <h2 class='text-3xl'>{currentRoom}</h2>
+        <h2 class='text-3xl'>{currentRoom} <span class="text-sm text-accent">{passcode && `(${passcode})`}</span></h2>
         <h3 class='text-center grow'>Members 0nline {roomMembers}</h3>
         <div class='ml-auto'>
           <ThemeSelect size={16} />
