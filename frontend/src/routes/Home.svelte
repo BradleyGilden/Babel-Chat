@@ -148,7 +148,7 @@
     fetchRoomData();
   };
 
-  $: if (currentRoom) {
+  $: if (currentRoom && currentNameSpace) {
     if (messageBlock) {
       setTimeout(() => {
         messageBlock.focus();
