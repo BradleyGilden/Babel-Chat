@@ -22,6 +22,8 @@
   import JoinRoomDialog from '../components/JoinRoomDialog.svelte';
   import SendInviteDialog from '../components/SendInviteDialog.svelte';
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   let userInfo = JSON.parse(localStorage.getItem('user'));
 
   // people present in current room
@@ -45,6 +47,10 @@
 
   let notifyMessages = [];
 
+  let langCode = '';
+
+  $: console.log(langCode);
+
   $: notificationMessages = notifyMessages;
 
   $: messages = roomList.reduce((acc, room) => {
@@ -61,9 +67,9 @@
 
   $: localStorage.setItem('currentNameSpace', currentNameSpace);
 
-  let socket = io('http://localhost:3000');
-  let socketPrivate = io('http://localhost:3000/private');
-  let socketNotify = io('http://localhost:3000/notify');
+  let socket = io(API_URL);
+  let socketPrivate = io(`${API_URL}/private`);
+  let socketNotify = io(`${API_URL}/notify`);
 
   const notificationListenerInit = (socketNotify) => {
     console.log('activated');
@@ -87,7 +93,11 @@
           joinedRooms = new Set([...joinedRooms, room.name]);
         });
 
-        socket.on(`${room.name}-message`, (message) => {
+        socket.on(`${room.name}-message`, async (message) => {
+          if (langCode && message.text && userInfo.username !== message.username) {
+            const response = await axios.get(`${API_URL}/api/translate`, { params: { text: message.text, code: langCode } });
+            message.translation = response.data.translation;
+          }
           if (message.text) messages[message.currentRoom].history = [...messages[message.currentRoom].history, message];
         });
       }
@@ -135,13 +145,13 @@
   $: {
     async function fetchRoomData() {
       if (currentNameSpace === '/') {
-        let response = await axios.get("http://localhost:3000/api/rooms", { params: {namespace: '/' }});
+        let response = await axios.get(`${API_URL}/api/rooms`, { params: {namespace: '/' }});
         roomList = response.data;
       } else if (currentNameSpace === '/private') {
-        let privateResponse = await axios.get("http://localhost:3000/api/rooms/private", { params: { userId: userInfo.id }});
+        let privateResponse = await axios.get(`${API_URL}/api/rooms/private`, { params: { userId: userInfo.id }});
         privateRoomList = privateResponse.data;
       } else {
-        let notifyResponse = await axios.get("http://localhost:3000/api/notifications", { params: { username: userInfo.username }})
+        let notifyResponse = await axios.get(`${API_URL}/api/notifications`, { params: { username: userInfo.username }})
         notifyMessages = notifyResponse.data;
       }
     }
@@ -158,16 +168,16 @@
   };
 
   onMount(async () => {
-    let response = await axios.get("http://localhost:3000/api/rooms", { params: {namespace: '/' }});
+    let response = await axios.get(`${API_URL}/api/rooms`, { params: {namespace: '/' }});
     roomList = response.data;
     roomListenerInit(socket, roomList);
     socket.emit('join room', { currentRoom, username: userInfo.username });
 
-    let privateResponse = await axios.get("http://localhost:3000/api/rooms/private", { params: { userId: userInfo.id }});
+    let privateResponse = await axios.get(`${API_URL}/api/rooms/private`, { params: { userId: userInfo.id }});
     privateRoomList = privateResponse.data;
     privateRoomListenerInit(socketPrivate, privateRoomList);
 
-    let notifyResponse = await axios.get("http://localhost:3000/api/notifications", { params: { username: userInfo.username }})
+    let notifyResponse = await axios.get(`${API_URL}/api/notifications`, { params: { username: userInfo.username }})
     notifyMessages = notifyResponse.data;
     notificationListenerInit(socketNotify);
   });
@@ -204,7 +214,7 @@
       currentRoom = roomList[0]?.name;
     }
     // delete the room and all it's messages
-    await axios.delete("http://localhost:3000/api/rooms", { data: { roomId: id, username: userInfo.username, roomName: name } });
+    await axios.delete(`${API_URL}/api/rooms`, { data: { roomId: id, username: userInfo.username, roomName: name } });
     // leave room connected by the server
     socket.emit('leave room', name);
   }
@@ -218,7 +228,7 @@
       currentRoom = privateRoomList[0]?.name;
     }
     // delete the room and all it's messages
-    await axios.delete("http://localhost:3000/api/rooms/private", { data: { roomId: id, userId: userInfo.id, roomName: name } });
+    await axios.delete(`${API_URL}/api/rooms/private`, { data: { roomId: id, userId: userInfo.id, roomName: name } });
     // leave room connected by the server
     socket.emit('leave room', name);
   }
@@ -287,7 +297,7 @@
       <!-- ------------------------------------ /Message Block ------------------------------------ -->
 
       <!-- ------------------------------------ Send Message Input ------------------------------------ -->
-      <SendInputComponent on:click={handleSendMessage} bind:currentText />
+      <SendInputComponent on:click={handleSendMessage} bind:currentText bind:langCode />
       <!-- ------------------------------------ /Send Message Input ------------------------------------ -->
     </div>
   </div>

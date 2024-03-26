@@ -4,6 +4,7 @@
   import axios from 'axios';
   import { nanoid } from 'nanoid';
 
+  const API_URL = import.meta.env.VITE_API_URL;
   export let privateRoomList = [];
   let addNewRoomName = '';
   let loadingNewRoom = false;
@@ -22,7 +23,7 @@
 
   const handleCreateRoom = async () => {
     loadingNewRoom = true;
-    const response = await axios.post('http://localhost:3000/api/rooms/private', {
+    const response = await axios.post(`${API_URL}/api/rooms/private`, {
       roomName: addNewRoomName,
       userId: id,
       passcode,

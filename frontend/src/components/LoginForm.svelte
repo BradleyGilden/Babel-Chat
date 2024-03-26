@@ -6,6 +6,7 @@
   import { quintOut } from 'svelte/easing';
   import axios from "axios";
   import Swal from 'sweetalert2';
+  const API_URL = import.meta.env.VITE_API_URL;
   let showPassword = false;
   let disabled = true;
   let password = '';
@@ -40,7 +41,7 @@
   const handleSubmit = async () => {
       isLoading = true;
       try {
-        const response = await axios.post('http://localhost:3000/api/user/login', {
+        const response = await axios.post(`${API_URL}/api/user/login`, {
           username,
           password
         });

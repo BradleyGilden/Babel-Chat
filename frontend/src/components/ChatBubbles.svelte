@@ -37,6 +37,6 @@
       {message.username}
       <time class="text-xs opacity-50">{dateFormatter(message.date)}</time>
     </div>
-    <pre class="chat-bubble chat-bubble-primary">{message.text}</pre>
+    <pre class="chat-bubble chat-bubble-primary">{message.translation ? message.translation : message.text}</pre>
   </div>
 {/if}

@@ -8,7 +8,7 @@ const messageSchema = new mongoose.Schema({
   // Define properties for each message
   // For example:
   text: String,
-  translated: String,
+  translation: String,
   date: Date,
   nanoId: String,
   currentRoom: String,

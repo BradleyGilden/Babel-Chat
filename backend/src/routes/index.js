@@ -16,6 +16,8 @@ import {
   deleteRoomsPrivate,
   joinRoomsPrivate,
   getNotifications,
+  getTranslation,
+  postUpdateTranslation,
 } from '../controllers';
 
 const baseRouter = express.Router();
@@ -36,6 +38,9 @@ baseRouter
 .delete('/rooms/private', deleteRoomsPrivate)
 .post('/rooms/private/join', joinRoomsPrivate)
 // Notification handler
-.get('/notifications', getNotifications);
+.get('/notifications', getNotifications)
+// translation handler
+.get('/translate', getTranslation)
+.post('/translate/save', postUpdateTranslation);
 
 export default baseRouter;

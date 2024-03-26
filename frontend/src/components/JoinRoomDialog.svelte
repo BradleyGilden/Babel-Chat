@@ -3,6 +3,7 @@
   import Swal from 'sweetalert2';
 
   // Dialog Box for the create room button
+  const API_URL = import.meta.env.VITE_API_URL;
   export let privateRoomList = [];
   let addNewRoomName = '';
   let loadingNewRoom = false;
@@ -12,7 +13,7 @@
   const handleJoinRoom = async () => {
     loadingNewRoom = true;
     try {
-      const response = await axios.post('http://localhost:3000/api/rooms/private/join', {
+      const response = await axios.post(`${API_URL}/api/rooms/private/join`, {
         roomName: addNewRoomName,
         passcode,
         userId: id,

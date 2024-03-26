@@ -1,12 +1,13 @@
 <script>
   import axios from 'axios';
 
+  const API_URL = import.meta.env.VITE_API_URL;
   let addNewRoomName = '';
   let loadingNewRoom = false;
 
   const handleRoomAdd = async () => {
     loadingNewRoom = true;
-    await axios.post("http://localhost:3000/api/rooms", { roomName: addNewRoomName });
+    await axios.post(`${API_URL}/api/rooms`, { roomName: addNewRoomName });
     loadingNewRoom = false;
   };
 

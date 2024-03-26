@@ -1,11 +1,14 @@
 <script>
+// @ts-nocheck
+
   import LangSelect from './LangSelect.svelte';
 
   export let currentText = "";
+  export let langCode = '';
 </script>
 <label class="h-20 relative">
   <textarea class="textarea textarea-primary w-full text-xl" placeholder="Message" bind:value={currentText}></textarea>
-  <LangSelect />
+  <LangSelect bind:langCode />
   <button
     type="button" class="absolute w-5 h-5 z-10 mx-[-4rem] my-[1rem] hover:text-primary"
     on:click >

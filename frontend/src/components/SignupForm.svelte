@@ -41,7 +41,7 @@
       isLoading = true;
       const signFormSwitch = document.getElementById('signFormSwitch');
       try {
-        await axios.post('http://localhost:3000/api/user/signup', {
+        await axios.post(`${API_URL}/api/user/signup`, {
           username,
           email,
           password
