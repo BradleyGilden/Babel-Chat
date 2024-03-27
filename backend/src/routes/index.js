@@ -8,6 +8,8 @@ import {
   dbCheck,
   createUser,
   validateUser,
+  updateUser,
+  logoutUser,
   getRooms,
   deleteRooms,
   createRoomsGlobal,
@@ -27,6 +29,8 @@ baseRouter
 .get('/', serverCheck)
 .get('/db', dbCheck)
 // User creation and authentication
+.delete('/user/logout', logoutUser)
+.post('/user/update', updateUser)
 .post('/user/signup', createUser)
 .post('/user/login', validateUser)
 // Room handlers

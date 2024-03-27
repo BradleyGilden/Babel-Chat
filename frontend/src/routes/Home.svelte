@@ -2,7 +2,7 @@
 // @ts-nocheck
   // tools
   import { onMount } from 'svelte';
-  import { link } from 'svelte-spa-router'
+  import { link, push } from 'svelte-spa-router'
   import { io } from 'socket.io-client';
   import axios from 'axios';
   // data
@@ -38,7 +38,7 @@
   let messageBlock;
   
   // current room selected
-  let currentRoom =  localStorage.getItem('currentRoom') || roomList[0]?.name;
+  let currentRoom =  localStorage.getItem('currentRoom') || roomList[0]?.name || 'Rooms';
   let currentNameSpace = localStorage.getItem('currentNameSpace') || '/';
   // message input box test
   let currentText = '';

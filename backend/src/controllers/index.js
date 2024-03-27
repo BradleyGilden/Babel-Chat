@@ -4,7 +4,7 @@
 
 
 import { serverCheck, dbCheck } from './service';
-import { createUser, validateUser } from './user';
+import { createUser, validateUser, updateUser, logoutUser } from './user';
 import { getNotifications, getTranslation ,postUpdateTranslation } from './messages';
 import {
   getRooms,
@@ -21,6 +21,8 @@ export {
   dbCheck,
   createUser,
   validateUser,
+  updateUser,
+  logoutUser,
   getRooms,
   deleteRooms,
   createRoomsGlobal,

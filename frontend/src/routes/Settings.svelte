@@ -1,12 +1,15 @@
 <script>
 // @ts-nocheck
 
-  import ThemeSelect from "../components/global/ThemeSelect.svelte";
+  import axios from "axios";
   import { push } from 'svelte-spa-router';
+  import Swal from 'sweetalert2';
+  import ThemeSelect from "../components/global/ThemeSelect.svelte";
   import Profile from "../components/global/Profile.svelte";
   
+  const API_URL = import.meta.env.VITE_API_URL;
   let userInfo = JSON.parse(localStorage.getItem('user'));
-  let { username } = userInfo;
+  let { username, id } = userInfo;
   let password = '';
   let disabled = true, udisabled = true, pdisabled=true;
 
@@ -14,7 +17,8 @@
   let validPassword = true;
   let validUsername = true;
   let initialized = false;
-  let isLoading = false;
+  let saveLoading = false;
+  let logoutLoading = false;
 
   $: {
     if (initialized) {
@@ -38,7 +42,40 @@
     } else {
       initialized = true
     }
-  }
+  };
+
+  const handleLogout = async () => {
+    logoutLoading = true;
+    localStorage.removeItem('user');
+    localStorage.removeItem('currentRoom');
+    localStorage.removeItem('currentNameSpace');
+    await axios.delete(`${API_URL}/api/user/logout`);
+    logoutLoading = false;
+    await push('/');
+  };
+
+  const saveSettings = async () => {
+    saveLoading = true;
+    try {
+      if (!pdisabled && !udisabled) {
+        await axios.post(`${API_URL}/api/user/update`, { uid: id, fields: { password, oldname: userInfo.username, newname: username }});
+        localStorage.setItem('user', JSON.stringify({...userInfo, username}));
+      } else if (!udisabled) {
+        await axios.post(`${API_URL}/api/user/update`, { uid: id, fields: { oldname: userInfo.username, newname: username }});
+        localStorage.setItem('user', JSON.stringify({...userInfo, username}));
+      } else if (!pdisabled) {
+        await axios.post(`${API_URL}/api/user/update`, { uid: id, fields: { password }});
+      }
+    } catch(err) {
+      saveLoading = false;
+      Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: err?.response?.data.message,
+      });
+    }
+    saveLoading = false;
+  };
 </script>
 
 <div>
@@ -57,7 +94,13 @@
       >API Docs</button>
       <button
       class='btn btn-warning text-2xl w-full border-warning border-2 rounded-full'
-      >Logout</button>
+      on:click={handleLogout}
+      >
+        {#if logoutLoading}
+          <span class="loading loading-spinner"></span>
+        {/if}
+        Logout
+      </button>
     </div>
   </header>
 
@@ -101,9 +144,10 @@
     </div>
     <button
     class="btn btn-primary w-48 ml-32 mt-10 text-lg"
+    on:click={saveSettings}
     {disabled}
     >
-      {#if isLoading}
+      {#if saveLoading}
         <span class="loading loading-spinner"></span>
       {/if}
       Save
