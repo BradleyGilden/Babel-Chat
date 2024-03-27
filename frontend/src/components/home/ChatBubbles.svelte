@@ -18,7 +18,7 @@
 {:else if message.username === username }
   <div class="chat chat-start">
     <div class="chat-image avatar">
-      <Profile moniker={message.username[0].toUpperCase()} status={'online'} width={10} fontSize={'xl'} />
+      <Profile moniker={message.username[0].toUpperCase()} status={'online'} width={'10'} fontSize={'xl'} />
     </div>
     <div class="chat-header">
       {message.username}
@@ -29,7 +29,7 @@
 {:else }
   <div class="chat chat-end">
     <div class="chat-image avatar">
-      <Profile moniker={message.username[0].toUpperCase()} status={'online'} width={10} fontSize={'xl'} />
+      <Profile moniker={message.username[0].toUpperCase()} status={'online'} width={'10'} fontSize={'xl'} />
     </div>
     <div class="chat-header">
       {message.username}

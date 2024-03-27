@@ -298,7 +298,7 @@
         <h2 class='text-3xl'>{currentRoom} <span class="text-sm text-accent">{passcode && `(${passcode})`}</span></h2>
         <h3 class='text-center grow'>Members 0nline {roomMembers}</h3>
         <div class='ml-auto'>
-          <ThemeSelect size={16} />
+          <ThemeSelect size={'16'} />
         </div>
       </header>
       <!-- ------------------------------------ /Chat Header 2 ------------------------------------ -->
@@ -315,16 +315,4 @@
 </div>
 
 <style>
-*::-webkit-scrollbar {
-  width: 1rem; /* Optional, adjust width if needed */
-}
-
-*::-webkit-scrollbar-track {
-  background: #060715; /* Color of the track */
-}
-
-*::-webkit-scrollbar-thumb {
-  background: #38BDF8; /* Color of the thumb */
-  border-radius: 20px; /* Roundness of the thumb */
-}
 </style>

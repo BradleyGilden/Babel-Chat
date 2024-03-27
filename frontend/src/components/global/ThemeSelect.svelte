@@ -1,5 +1,5 @@
 <script>
-  export let size;
+  export let size = '16';
   let isDark = JSON.parse(localStorage.getItem('isdark'));
   const changeTheme = (status) => {
     localStorage.setItem('isdark', JSON.stringify(status));
