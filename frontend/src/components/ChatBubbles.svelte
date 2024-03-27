@@ -11,7 +11,7 @@
       SYSTEM
       <time class="text-xs opacity-50">{dateFormatter(message.date)}</time>
     </div>
-    <pre class="chat-bubble chat-bubble-warning">{message.text}</pre>
+    <pre class="chat-bubble chat-bubble-warning">{message.translation ? message.translation : message.text}</pre>
   </div>
 {:else if message.username === username }
   <div class="chat chat-start">

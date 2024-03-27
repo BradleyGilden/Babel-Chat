@@ -24,7 +24,7 @@ const getTranslation = asyncWrapper(async (req, res) => {
 const postUpdateTranslation = asyncWrapper(async (req, res) => {
   const { nanoId, translation } = req.body;
 
-  await Message.findOneUpdate({ nanoId }, { translation }).exec();
+  await Message.findOneAndUpdate({ nanoId }, { translation }).exec();
 
   res.sendStatus(200);
 });

@@ -73,7 +73,7 @@
 
   const notificationListenerInit = (socketNotify) => {
     console.log('activated');
-    socketNotify.on(`${userInfo.username}-notifications`, (notifications) => {
+    socketNotify.on(`${userInfo.username}-notifications`, async (notifications) => {
       notificationMessages = [...notificationMessages, notifications]
     })
   }
@@ -84,10 +84,14 @@
         socket.emit('ghost join', { currentRoom: room.name, username: userInfo.username });
 
         listenRooms = new Set([...listenRooms, room.name])
-        socket.on(`${room.name}-status`, (message) => {
+        socket.on(`${room.name}-status`, async (message) => {
           roomMembers = message.numClients;
           if (!joinedRooms.has(room.name) || (joinedRooms.has(room.name) && userInfo.username !== message.username)) {
             message.text = `${message.username} has joined ${room.name}`
+            if (langCode && message.text) {
+              const response = await axios.get(`${API_URL}/api/translate`, { params: { text: message.text, code: langCode } });
+              message.translation = response.data.translation;
+            }
             messages[room.name].history = [...messages[room.name].history, message]
           }
           joinedRooms = new Set([...joinedRooms, room.name]);
@@ -97,6 +101,7 @@
           if (langCode && message.text && userInfo.username !== message.username) {
             const response = await axios.get(`${API_URL}/api/translate`, { params: { text: message.text, code: langCode } });
             message.translation = response.data.translation;
+            axios.post(`${API_URL}/api/translate/save`, { nanoId: message.nanoId, translation: message.translation });
           }
           if (message.text) messages[message.currentRoom].history = [...messages[message.currentRoom].history, message];
         });
@@ -109,7 +114,12 @@
       privateSocket.emit('ghost join', { currentRoom: privateRoom.name, username: userInfo.username });
       if (!listenPrivateRooms.has(privateRoom.name)) {
         listenPrivateRooms = new Set([...listenPrivateRooms, privateRoom.name])
-        privateSocket.on(`${privateRoom.name}-message`, (message) => {
+        privateSocket.on(`${privateRoom.name}-message`, async (message) => {
+          if (langCode && message.text && userInfo.username !== message.username) {
+            const response = await axios.get(`${API_URL}/api/translate`, { params: { text: message.text, code: langCode } });
+            message.translation = response.data.translation;
+            axios.post(`${API_URL}/api/translate/save`, { nanoId: message.nanoId, translation: message.translation });
+          }
           if (message.text) privateMessages[message.currentRoom].history = [...privateMessages[message.currentRoom].history, message];
         });
       }
