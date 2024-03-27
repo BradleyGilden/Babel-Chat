@@ -1,7 +1,7 @@
 <script>
-  import ThemeSelect from "../components/ThemeSelect.svelte";
-  import LoginForm from "../components/LoginForm.svelte";
-  import SignupForm from "../components/SignupForm.svelte";
+  import ThemeSelect from "../components/global/ThemeSelect.svelte";
+  import LoginForm from "../components/login/LoginForm.svelte";
+  import SignupForm from "../components/login/SignupForm.svelte";
 
   let showLogin = true;
   const handleFormSwitch = () => {showLogin = !showLogin};

@@ -1,6 +1,6 @@
 <script>
-  import dateFormatter from '../utility/dateHandler';
-  import Profile from './Profile.svelte';
+  import dateFormatter from '../../utility/dateHandler';
+  import Profile from '../global/Profile.svelte';
 
   export let message;
   export let username;

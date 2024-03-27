@@ -2,25 +2,26 @@
 // @ts-nocheck
   // tools
   import { onMount } from 'svelte';
+  import { link } from 'svelte-spa-router'
   import { io } from 'socket.io-client';
   import axios from 'axios';
   // data
   import { userData } from '../store';
   // display components
-  import ThemeSelect from '../components/ThemeSelect.svelte';
-  import Profile from '../components/Profile.svelte';
-  import MessageBlock from '../components/MessageBlock.svelte';
-  import NameSpaces from '../components/NameSpaces.svelte';
-  import RoomListComponent from '../components/RoomListComponent.svelte';
-  import PrivateRoomListComponent from '../components/PrivateRoomListComponent.svelte';
+  import ThemeSelect from '../components/global/ThemeSelect.svelte';
+  import Profile from '../components/global/Profile.svelte';
+  import MessageBlock from '../components/home/MessageBlock.svelte';
+  import NameSpaces from '../components/home/NameSpaces.svelte';
+  import RoomListComponent from '../components/home/RoomListComponent.svelte';
+  import PrivateRoomListComponent from '../components/home/PrivateRoomListComponent.svelte';
   // action components
-  import SendInputComponent from '../components/SendInputComponent.svelte';
-  import AddRoomButton from '../components/AddRoomButton.svelte';
+  import SendInputComponent from '../components/home/SendInputComponent.svelte';
+  import AddRoomButton from '../components/home/AddRoomButton.svelte';
   // dialogs
-  import CreateRoomDialog from '../components/CreateRoomDialog.svelte';
-  import AddRoomDialog from '../components/AddRoomDialog.svelte';
-  import JoinRoomDialog from '../components/JoinRoomDialog.svelte';
-  import SendInviteDialog from '../components/SendInviteDialog.svelte';
+  import CreateRoomDialog from '../components/home/CreateRoomDialog.svelte';
+  import AddRoomDialog from '../components/home/AddRoomDialog.svelte';
+  import JoinRoomDialog from '../components/home/JoinRoomDialog.svelte';
+  import SendInviteDialog from '../components/home/SendInviteDialog.svelte';
 
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -240,7 +241,7 @@
     // delete the room and all it's messages
     await axios.delete(`${API_URL}/api/rooms/private`, { data: { roomId: id, userId: userInfo.id, roomName: name } });
     // leave room connected by the server
-    socket.emit('leave room', name);
+    socketPrivate.emit('leave room', name);
   }
 </script>
 
@@ -258,7 +259,7 @@
         <h2 class='text-2xl'>{userInfo.username}</h2>
       </header>
       <!-- ------------------------------------ /Chat Header 1 ------------------------------------ -->
-      <a href="#/" class="btn btn-secondary w-full text-2xl rounded-none">Settings</a>
+      <a href="/settings" class="btn btn-secondary w-full text-2xl rounded-none" use:link>Settings</a>
       <div class="w-full flex">
         <!-- ------------------------------------ NameSpaces ------------------------------------ -->
         <NameSpaces bind:currentNameSpace />

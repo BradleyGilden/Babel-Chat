@@ -1,7 +1,7 @@
 <script>
 // @ts-nocheck
   import { push } from 'svelte-spa-router';
-  import { userData } from '../store';
+  import { userData } from '../../store';
   import { slide } from "svelte/transition";
   import { quintOut } from 'svelte/easing';
   import axios from "axios";

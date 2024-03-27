@@ -1,5 +1,5 @@
 <script>
-  import langs from "../utility/languages";
+  import langs from "../../utility/languages";
 
   let langPick = '';
   export let langCode = '';

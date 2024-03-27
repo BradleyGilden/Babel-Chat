@@ -16,6 +16,7 @@
   const handleInitiateInvite = (e) => {
     inviteCode = e.target.dataset.passcode;
     inviteRoom = e.target.dataset.name;
+    // @ts-ignore
     document.getElementById("send_invite_modal").showModal();
   }
 </script>
