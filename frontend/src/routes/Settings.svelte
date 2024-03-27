@@ -18,7 +18,9 @@
 
   $: {
     if (initialized) {
-      if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,16}$/.test(password)) {
+      if (pdisabled) {
+        validPassword = true;
+      } else if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,16}$/.test(password)) {
         validPassword = true;
       } else {
         validPassword = false;
@@ -28,7 +30,7 @@
       } else {
         validUsername = false;
       }
-      if (validPassword && validUsername) {
+      if ((validPassword && !pdisabled) || (validUsername && !udisabled)) {
         disabled = false;
       } else {
         disabled = true;
@@ -97,7 +99,10 @@
         <kbd class="kbd kbd-3xl">✎</kbd>
       </button>
     </div>
-    <button class="btn btn-primary w-48 ml-32 mt-10 text-lg">
+    <button
+    class="btn btn-primary w-48 ml-32 mt-10 text-lg"
+    {disabled}
+    >
       {#if isLoading}
         <span class="loading loading-spinner"></span>
       {/if}
