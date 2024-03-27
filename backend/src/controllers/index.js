@@ -2,10 +2,13 @@
  * This module is used for organising the application controllers
  */
 
-
-import { serverCheck, dbCheck } from './service';
-import { createUser, validateUser, updateUser, logoutUser } from './user';
-import { getNotifications, getTranslation ,postUpdateTranslation } from './messages';
+import { serverCheck, dbCheck } from "./service";
+import { createUser, validateUser, updateUser, logoutUser } from "./user";
+import {
+  getNotifications,
+  getTranslation,
+  postUpdateTranslation,
+} from "./messages";
 import {
   getRooms,
   deleteRooms,
@@ -14,7 +17,7 @@ import {
   getRoomsPrivate,
   deleteRoomsPrivate,
   joinRoomsPrivate,
-} from './rooms';
+} from "./rooms";
 
 export {
   serverCheck,

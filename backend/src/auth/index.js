@@ -1,8 +1,8 @@
 /**
  * handles authentication of a users log in
  */
-import bcrypt from 'bcrypt';
-import crypto from 'crypto';
+import bcrypt from "bcrypt";
+import crypto from "crypto";
 
 /**
  * hashes a plaintext password using bcrypt's hash method with 10 satl rounds
@@ -11,7 +11,7 @@ import crypto from 'crypto';
  */
 const hashpwd = (plainTextPassword) => {
   return bcrypt.hash(plainTextPassword, 10);
-}
+};
 
 /**
  * validates a plaintext password against a salted hash
@@ -21,7 +21,7 @@ const hashpwd = (plainTextPassword) => {
  */
 const checkpwd = (plainTextPassword, hash) => {
   return bcrypt.compare(plainTextPassword, hash);
-}
+};
 
 /**
  * randomly generates a seceret key using the crypto module
@@ -29,12 +29,7 @@ const checkpwd = (plainTextPassword, hash) => {
  * @returns {string} a random hexidecimal string
  */
 const generateSecretKey = (length = 16) => {
-  return crypto.randomBytes(length).toString('hex');
-}
+  return crypto.randomBytes(length).toString("hex");
+};
 
-
-export {
-  checkpwd,
-  hashpwd,
-  generateSecretKey,
-}
+export { checkpwd, hashpwd, generateSecretKey };

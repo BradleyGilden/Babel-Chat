@@ -2,7 +2,7 @@
  * This module is used for organising the application routes
  */
 
-import express from 'express';
+import express from "express";
 import {
   serverCheck,
   dbCheck,
@@ -20,31 +20,30 @@ import {
   getNotifications,
   getTranslation,
   postUpdateTranslation,
-} from '../controllers';
+} from "../controllers";
 
 const baseRouter = express.Router();
 
-baseRouter
 // status checks
-.get('/', serverCheck)
-.get('/db', dbCheck)
+baseRouter.get("/", serverCheck);
+baseRouter.get("/db", dbCheck);
 // User creation and authentication
-.delete('/user/logout', logoutUser)
-.post('/user/update', updateUser)
-.post('/user/signup', createUser)
-.post('/user/login', validateUser)
+baseRouter.delete("/user/logout", logoutUser);
+baseRouter.post("/user/update", updateUser);
+baseRouter.post("/user/signup", createUser);
+baseRouter.post("/user/login", validateUser);
 // Room handlers
-.get('/rooms', getRooms)
-.delete('/rooms', deleteRooms)
-.post('/rooms', createRoomsGlobal)
-.post('/rooms/private', createRoomsPrivate)
-.get('/rooms/private', getRoomsPrivate)
-.delete('/rooms/private', deleteRoomsPrivate)
-.post('/rooms/private/join', joinRoomsPrivate)
+baseRouter.get("/rooms", getRooms);
+baseRouter.delete("/rooms", deleteRooms);
+baseRouter.post("/rooms", createRoomsGlobal);
+baseRouter.post("/rooms/private", createRoomsPrivate);
+baseRouter.get("/rooms/private", getRoomsPrivate);
+baseRouter.delete("/rooms/private", deleteRoomsPrivate);
+baseRouter.post("/rooms/private/join", joinRoomsPrivate);
 // Notification handler
-.get('/notifications', getNotifications)
+baseRouter.get("/notifications", getNotifications);
 // translation handler
-.get('/translate', getTranslation)
-.post('/translate/save', postUpdateTranslation);
+baseRouter.get("/translate", getTranslation);
+baseRouter.post("/translate/save", postUpdateTranslation);
 
 export default baseRouter;

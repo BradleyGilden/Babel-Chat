@@ -4,6 +4,7 @@
   "description": "Backend for the Babel-Chat app",
   "main": "index.js",
   "scripts": {
+    "lint": "prettier --config .prettierrc --write",
     "dev": "nodemon --exec babel-node --presets @babel/preset-env ./src/index.js",
     "prebuild": "babel src -d build",
     "start": "node build/index.js",
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "dotenv": "^16.4.5",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "prettier": "^3.2.5"
   }
 }

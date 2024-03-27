@@ -1,5 +1,5 @@
-import CustomError from '../utility/error';
-import { Request, Response } from 'express';
+import CustomError from "../utility/error";
+import { Request, Response } from "express";
 
 /**
  * Middleware used to handle any error thrown in the express application as a response
@@ -14,9 +14,11 @@ import { Request, Response } from 'express';
 const errorHandler = (err, req, res, next) => {
   console.log(err);
   if (err instanceof CustomError) {
-    return res.status(err.statusCode).json({ message: err.message})
+    return res.status(err.statusCode).json({ message: err.message });
   }
-  return res.status(500).json({ message: err.message || 'Something went wrong ...'})
-}
+  return res
+    .status(500)
+    .json({ message: err.message || "Something went wrong ..." });
+};
 
 export default errorHandler;

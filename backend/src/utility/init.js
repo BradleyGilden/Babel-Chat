@@ -1,4 +1,4 @@
-import mongooseConnect from '../db/connect';
+import mongooseConnect from "../db/connect";
 
 /**
  * Establishes connection

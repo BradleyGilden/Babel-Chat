@@ -1,6 +1,6 @@
 /**
  * Wraps asynchronous methods, mainly those making external api requests, to handle errors
- * @param {asyncCallBack} callBack 
+ * @param {asyncCallBack} callBack
  * @returns {Promise<null>}
  */
 
@@ -11,7 +11,7 @@ const asyncWrapper = (callBack) => {
     } catch (error) {
       next(error);
     }
-  }
+  };
 };
 
 export default asyncWrapper;

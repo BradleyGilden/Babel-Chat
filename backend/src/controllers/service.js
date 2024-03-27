@@ -1,23 +1,23 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 /**
  * Basic status check to see if backend service is operational
  * @param {express.Request} _req unused
- * @param { express.Response } res 
+ * @param { express.Response } res
  */
 
 const serverCheck = (_req, res) => {
   res.status(200).send("Backend service operational");
-}
+};
 
 /**
  * Checks the status of MongoDB connection
  * @param {express.Request} _req unused
- * @param { express.Response } res 
+ * @param { express.Response } res
  * @returns { void }
  */
 const dbCheck = (_req, res) => {
-  switch(mongoose.connection.readyState) {
+  switch (mongoose.connection.readyState) {
     case 0:
       return res.status(200).send("Disconnected");
     case 1:
@@ -29,9 +29,6 @@ const dbCheck = (_req, res) => {
     default:
       return res.status(200).send("Database connection unitialized");
   }
-}
-
-export {
-  serverCheck,
-  dbCheck,
 };
+
+export { serverCheck, dbCheck };

@@ -2,11 +2,10 @@
  * The models module defines the schema for the mongodb database models using mongoose
  */
 
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema({
   // Define properties for each message
-  // For example:
   text: String,
   translation: String,
   date: Date,
@@ -15,7 +14,6 @@ const messageSchema = new mongoose.Schema({
   username: String,
   roomId: String,
   userId: String,
-  // Add other properties as needed
 });
 
 // create schema for a user
@@ -30,7 +28,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    lowercase: true,  // changed all input to lowercase
+    lowercase: true, // changed all input to lowercase
   },
   password: {
     type: String,
@@ -38,7 +36,8 @@ const userSchema = new mongoose.Schema({
   },
   color: {
     type: String,
-    default: () => "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0"),
+    default: () =>
+      "#" + (((1 << 24) * Math.random()) | 0).toString(16).padStart(6, "0"),
   },
   createdAt: {
     type: Date,
@@ -47,9 +46,9 @@ const userSchema = new mongoose.Schema({
   rooms: [
     {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: 'Room',
-    }
-  ]
+      ref: "Room",
+    },
+  ],
 });
 
 // create schema for a room
@@ -74,23 +73,19 @@ const roomSchema = new mongoose.Schema({
   messages: [
     {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: 'Message',
-    }
+      ref: "Message",
+    },
   ],
-})
+});
 
 // virtual method to calculate number of Users in a room
-roomSchema.virtual('userCount').get(function() {
+roomSchema.virtual("userCount").get(function () {
   return this.users?.length || 0;
 });
 
 // instantiate models for collections users and rooms
-const User = mongoose.model('User', userSchema);
-const Room = mongoose.model('Room', roomSchema);
-const Message = mongoose.model('Message', messageSchema);
+const User = mongoose.model("User", userSchema);
+const Room = mongoose.model("Room", roomSchema);
+const Message = mongoose.model("Message", messageSchema);
 
-export {
-  User,
-  Room,
-  Message
-}
+export { User, Room, Message };
