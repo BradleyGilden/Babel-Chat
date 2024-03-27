@@ -1,5 +1,7 @@
 <script>
   import dateFormatter from '../utility/dateHandler';
+  import Profile from './Profile.svelte';
+
   export let message;
   export let username;
   export let system = false;
@@ -16,9 +18,7 @@
 {:else if message.username === username }
   <div class="chat chat-start">
     <div class="chat-image avatar">
-      <div class="w-10 rounded-full">
-        <img alt="Tailwind CSS chat bubble component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-      </div>
+      <Profile moniker={message.username[0].toUpperCase()} status={'online'} width={10} fontSize={'xl'} />
     </div>
     <div class="chat-header">
       {message.username}
@@ -29,9 +29,7 @@
 {:else }
   <div class="chat chat-end">
     <div class="chat-image avatar">
-      <div class="w-10 rounded-full">
-        <img alt="Tailwind CSS chat bubble component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-      </div>
+      <Profile moniker={message.username[0].toUpperCase()} status={'online'} width={10} fontSize={'xl'} />
     </div>
     <div class="chat-header">
       {message.username}
