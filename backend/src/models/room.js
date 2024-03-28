@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 // create schema for a room
 const roomSchema = new mongoose.Schema({
   name: {
