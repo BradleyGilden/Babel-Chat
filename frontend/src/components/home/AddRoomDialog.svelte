@@ -1,10 +1,12 @@
 <script>
+  // Component for the dialog box for adding a room
   import axios from "axios";
 
   const API_URL = import.meta.env.VITE_API_URL;
   let addNewRoomName = "";
   let loadingNewRoom = false;
 
+  // controlls the click event for adding a room
   const handleRoomAdd = async () => {
     loadingNewRoom = true;
     await axios.post(`${API_URL}/api/rooms`, { roomName: addNewRoomName });

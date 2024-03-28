@@ -1,3 +1,4 @@
+<!-- Triggers event to add room the room list -->
 <div
   class="bg-secondary-content relative text-primary flex w-full rounded-none text-xl border-t-primary border-b-primary gap-5 justify-center"
 >
