@@ -90,9 +90,11 @@ baseRouter.get("/db", dbCheck);
  *       properties:
  *         _id:
  *           type: string
+ *           example: "6601d904735a8346d3654427"
  *           description: The unique identifier of the notification message.
  *         text:
  *           type: string
+ *           example: "JackSparrow invites you to join them in a private chat\nRoom: NewPrivate\nCode: o1AivadF"
  *           description: The text of the notification message.
  *         date:
  *           type: string
@@ -100,6 +102,7 @@ baseRouter.get("/db", dbCheck);
  *           description: The date and time when the notification message was sent.
  *         username:
  *           type: string
+ *           example: "Conan"
  *           description: The username of the recipient of the notification message.
  *         __v:
  *           type: number
