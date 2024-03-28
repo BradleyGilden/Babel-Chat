@@ -1,3 +1,3 @@
 # Backend - Express + MongoDB
 
-contains all backend logic
+contains all backend logic for the app

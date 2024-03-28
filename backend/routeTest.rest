@@ -1,5 +1,5 @@
 ### -------------- Status Checks ---------------------------
-GET http://localhost:3000/api/aslkdfj
+GET http://localhost:3000/api/aslkd
 ###
 GET http://localhost:3000/api
 ###

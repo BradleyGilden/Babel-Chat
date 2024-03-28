@@ -1,3 +1,3 @@
-# Frontend - Svelte + Vite
+# Frontend - Svelte
 
 contains all frontend logic and styling
