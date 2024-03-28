@@ -53,6 +53,7 @@ const serverStartup = async () => {
     console.log("server starting on port", process.env.PORT || 3000);
   });
 
+  // initialize socket server listeners
   socketInit(io);
 };
 

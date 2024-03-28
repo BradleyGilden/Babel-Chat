@@ -1,6 +1,13 @@
 import { Room, Message } from "../models";
 import { Types } from "mongoose";
 
+/**
+ * Populates rooms with reference id's to messages that were sent within them
+ * @param {object} messageObj a message document with data that describes the
+ * instance of the message
+ * @return {void}
+ */
+
 const updateMessage = (messageObj) => {
   const message = new Message(messageObj);
 
@@ -18,11 +25,18 @@ const updateMessage = (messageObj) => {
     });
 };
 
+/**
+ * Saves a message of type notification
+ * @param {object} messageObj a message document with data that describes the
+ * instance of the message
+ * @return {void}
+ */
+
 const updateNotification = (messageObj) => {
   const message = new Message(messageObj);
   message
     .save()
-    .then((savedMessage) => {
+    .then((_savedMessage) => {
       // message is now saved
     })
     .catch((err) => {
