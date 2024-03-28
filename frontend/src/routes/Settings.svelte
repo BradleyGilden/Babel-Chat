@@ -127,9 +127,12 @@
       <ThemeSelect size={"16"} />
     </div>
     <div class="absolute top-20 text-center w-[12rem] flex flex-col gap-y-2">
-      <button
+      <a
+        href={`${API_URL}/docs`}
+        target="_blank"
+        rel="noreferrer"
         class="btn bg-base-100 text-2xl text-warning w-full border-warning border-2 rounded-full"
-        >API Docs</button
+        >API Docs</a
       >
       <button
         class="btn btn-warning text-2xl w-full border-warning border-2 rounded-full"
