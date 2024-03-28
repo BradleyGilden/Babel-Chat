@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "prettier --config .prettierrc --write",
     "dev": "nodemon --exec babel-node --presets @babel/preset-env ./src/index.js",
-    "prebuild": "node_modules/.bin/babel src -d build",
+    "prebuild": "./node_modules/.bin/babel src -d build",
     "start": "node build/index.js",
     "build": "npm install && npm run prebuild"
   },
