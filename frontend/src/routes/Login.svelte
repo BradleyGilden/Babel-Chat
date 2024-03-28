@@ -1,7 +1,10 @@
 <script>
+  import { replace } from 'svelte-spa-router';
   import ThemeSelect from "../components/global/ThemeSelect.svelte";
   import LoginForm from "../components/login/LoginForm.svelte";
   import SignupForm from "../components/login/SignupForm.svelte";
+
+  if(localStorage.getItem('user')) replace('/home');
 
   let showLogin = true;
   const handleFormSwitch = () => {

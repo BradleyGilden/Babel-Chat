@@ -1,6 +1,6 @@
 <script>
   // @ts-nocheck
-  import { push } from "svelte-spa-router";
+  import { replace } from "svelte-spa-router";
   import { userData } from "../../store";
   import { slide } from "svelte/transition";
   import { quintOut } from "svelte/easing";
@@ -57,7 +57,7 @@
         }),
       );
       isLoading = false;
-      await push("/home");
+      await replace("/home");
     } catch (err) {
       isLoading = false;
       Swal.fire({
