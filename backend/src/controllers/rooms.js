@@ -111,7 +111,7 @@ const createRoomsPrivate = asyncWrapper(async (req, res) => {
 });
 
 /**
- * POST join rooms endpoint => /api/translate
+ * POST join rooms endpoint => /api/rooms/private/join
  * 
  * @param {Object} req Express request object.
  * @param {Object} res Express response object.
@@ -142,7 +142,7 @@ const joinRoomsPrivate = asyncWrapper(async (req, res) => {
 });
 
 /**
- * GET list of private rooms belonging to a user => /api/translate
+ * GET list of private rooms belonging to a user => /api/rooms/private
  * 
  * @param {Object} req Express request object.
  * @param {Object} res Express response object.
@@ -176,7 +176,7 @@ const getRoomsPrivate = asyncWrapper(async (req, res) => {
 });
 
 /**
- * DELETE private rooms for owner and other members => /api/translate
+ * DELETE private rooms for owner and other members => /api/rooms/private
  * 
  * @param {Object} req Express request object.
  * @param {Object} res Express response object.
