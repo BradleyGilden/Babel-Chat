@@ -21,7 +21,7 @@ const io = socketio(server, {
   },
 });
 
-// initialize a global variable
+// initialize the global variable
 global.io = io;
 
 // Middleware declarations
