@@ -57,7 +57,6 @@ const updateUser = asyncWrapper(async (req, res) => {
     const user = await User.findOne({ username: fields.newname }).exec();
 
     if (user) throw new CustomError("Username is taken", 401);
-
     await Message.updateMany(
       { username: fields.oldname },
       { username: fields.newname },
@@ -65,11 +64,12 @@ const updateUser = asyncWrapper(async (req, res) => {
     fields.username = fields.newname;
     delete fields.newname;
     delete fields.oldname;
-    if (fields.password) fields.password = hashpwd(fields.password);
+    if (fields.password) fields.password = await hashpwd(fields.password);
     await User.findByIdAndUpdate(new Types.ObjectId(uid), { ...fields }).exec();
   } else {
+    const hashedpwd = await hashpwd(fields.password);
     await User.findByIdAndUpdate(new Types.ObjectId(uid), {
-      password: hashpwd(fields.password),
+      password: hashedpwd,
     }).exec();
   }
 

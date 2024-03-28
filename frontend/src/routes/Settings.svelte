@@ -62,22 +62,32 @@
     saveLoading = true;
     try {
       if (!pdisabled && !udisabled) {
+        pdisabled = true;
+        udisabled = true;
         await axios.post(`${API_URL}/api/user/update`, {
           uid: id,
           fields: { password, oldname: userInfo.username, newname: username },
         });
         localStorage.setItem("user", JSON.stringify({ ...userInfo, username }));
+        userInfo = { ...userInfo, username };
+        pdisabled = false;
+        udisabled = false;
       } else if (!udisabled) {
+        udisabled = true;
         await axios.post(`${API_URL}/api/user/update`, {
           uid: id,
           fields: { oldname: userInfo.username, newname: username },
         });
         localStorage.setItem("user", JSON.stringify({ ...userInfo, username }));
+        userInfo = { ...userInfo, username };
+        udisabled = false;
       } else if (!pdisabled) {
+        pdisabled = true;
         await axios.post(`${API_URL}/api/user/update`, {
           uid: id,
           fields: { password },
         });
+        pdisabled = false;
       }
     } catch (err) {
       saveLoading = false;
