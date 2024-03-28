@@ -7,7 +7,7 @@
   import ThemeSelect from "../components/global/ThemeSelect.svelte";
   import Profile from "../components/global/Profile.svelte";
 
-  const API_URL = 'https://bchat-1-0.onrender.com';
+  const API_URL = import.meta.env.VITE_API_URL;
   let userInfo = JSON.parse(localStorage.getItem("user"));
   let { username, id } = userInfo;
   let password = "";

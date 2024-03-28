@@ -6,7 +6,7 @@
   import { quintOut } from "svelte/easing";
   import axios from "axios";
   import Swal from "sweetalert2";
-  const API_URL = 'https://bchat-1-0.onrender.com';
+  const API_URL = import.meta.env.VITE_API_URL;
   let showPassword = false;
   let disabled = true;
   let password = "";

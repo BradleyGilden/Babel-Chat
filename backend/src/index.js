@@ -17,7 +17,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server, {
   cors: {
-    origin: "https://babel-chat.onrender.com",
+    origin: "*",
   },
 });
 
@@ -27,9 +27,7 @@ global.io = io;
 // Middleware declarations
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(
-  cors({ origin: "https://babel-chat.onrender.com" }),
-);
+app.use(cors());
 app.use(morgan("tiny")); // logger
 app.use(
   session({

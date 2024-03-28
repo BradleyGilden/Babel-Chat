@@ -15,7 +15,7 @@
   let initialized = false;
   let isLoading = false;
 
-  const API_URL = 'https://bchat-1-0.onrender.com';
+  const API_URL = import.meta.env.VITE_API_URL;
 
   $: {
     if (initialized) {

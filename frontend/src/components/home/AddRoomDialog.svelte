@@ -2,7 +2,7 @@
   // Component for the dialog box for adding a room
   import axios from "axios";
 
-  const API_URL = 'https://bchat-1-0.onrender.com';
+  const API_URL = import.meta.env.VITE_API_URL;
   let addNewRoomName = "";
   let loadingNewRoom = false;
 

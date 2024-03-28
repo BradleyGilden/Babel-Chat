@@ -3,7 +3,7 @@
   import Swal from "sweetalert2";
 
   // Dialog Box for the create room button
-  const API_URL = 'https://bchat-1-0.onrender.com';
+  const API_URL = import.meta.env.VITE_API_URL;
   export let privateRoomList = [];
   let addNewRoomName = "";
   let loadingNewRoom = false;
