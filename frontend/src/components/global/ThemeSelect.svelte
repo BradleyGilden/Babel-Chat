@@ -1,4 +1,5 @@
 <script>
+  // Controlls the theme of the entire application
   export let size = "16";
   let isDark = JSON.parse(localStorage.getItem("isdark"));
   const changeTheme = (status) => {

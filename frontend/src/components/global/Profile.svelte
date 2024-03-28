@@ -1,4 +1,5 @@
 <script>
+  // Profile image component that generates letter profiles for each user
   export let width = "16";
   export let fontSize = "3xl";
   export let moniker;
