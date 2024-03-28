@@ -3,9 +3,18 @@ import asyncWrapper from "../middleware/asyncWrapper";
 import { Room, Message, User } from "../models";
 import CustomError from "../utility/error";
 
+/**
+ * GET list of globalrooms => /api/rooms
+ * 
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Object} JSON response with room list.
+ */
+
 const getRooms = asyncWrapper(async (req, res) => {
   const { namespace } = req.query;
 
+  // poplulate room object with messages
   const response = await Room.find({ namespace }, "name namespace messages")
     .populate("messages")
     .exec();
@@ -27,15 +36,31 @@ const getRooms = asyncWrapper(async (req, res) => {
   res.status(200).json(rooms);
 });
 
+/**
+ * DELETE globalroom => /api/rooms
+ * 
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
+
 const deleteRooms = asyncWrapper(async (req, res) => {
   const { roomId, username, roomName } = req.body;
   await Room.deleteOne({ _id: new Types.ObjectId(roomId) }).exec();
 
+  // emit delete room event to delete room for other users
   global.io.emit("delete room", { roomId, username, roomName });
 
   await Message.deleteMany({ roomId }).exec();
   res.sendStatus(204);
 });
+
+/**
+ * POST create an instance of a global room => /api/rooms
+ * 
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Object} JSON response with room list.
+ */
 
 const createRoomsGlobal = asyncWrapper(async (req, res) => {
   const { roomName } = req.body;
@@ -51,6 +76,14 @@ const createRoomsGlobal = asyncWrapper(async (req, res) => {
   });
   res.sendStatus(201);
 });
+
+/**
+ * POST create private room instance => /api/rooms
+ * 
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Object} JSON response with room object
+ */
 
 const createRoomsPrivate = asyncWrapper(async (req, res) => {
   const { roomName, userId, passcode } = req.body;
@@ -77,6 +110,14 @@ const createRoomsPrivate = asyncWrapper(async (req, res) => {
   });
 });
 
+/**
+ * POST join rooms endpoint => /api/translate
+ * 
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Object} JSON response with room object
+ */
+
 const joinRoomsPrivate = asyncWrapper(async (req, res) => {
   const { roomName, passcode, userId } = req.body;
 
@@ -100,9 +141,19 @@ const joinRoomsPrivate = asyncWrapper(async (req, res) => {
   });
 });
 
+/**
+ * GET list of private rooms belonging to a user => /api/translate
+ * 
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Object} JSON response with room object
+ */
+
 const getRoomsPrivate = asyncWrapper(async (req, res) => {
   const { userId } = req.query;
   let rooms = [];
+
+  // populate user with rooms, and populate rooms with messages
   const user = await User.findById(new Types.ObjectId(userId))
     .populate({
       path: "rooms",
@@ -124,9 +175,17 @@ const getRoomsPrivate = asyncWrapper(async (req, res) => {
   res.status(200).json(rooms);
 });
 
+/**
+ * DELETE private rooms for owner and other members => /api/translate
+ * 
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
+
 const deleteRoomsPrivate = asyncWrapper(async (req, res) => {
   const { roomId, userId, roomName } = req.body;
   const room = await Room.findById(new Types.ObjectId(roomId)).exec();
+  // if owner delete room and chat history for everyone
   if (room.ownerId === userId) {
     await room.deleteOne();
     await Message.deleteMany({ roomId }).exec();
@@ -134,6 +193,7 @@ const deleteRoomsPrivate = asyncWrapper(async (req, res) => {
     const user = await User.findById(new Types.ObjectId(userId)).exec();
     user.rooms = user.rooms.filter((room) => String(room._id) !== roomId);
     await user.save();
+    // if not owner, just delete room relationship
   } else {
     const user = await User.findById(new Types.ObjectId(userId)).exec();
     user.rooms = user.rooms.filter((room) => String(room._id) !== roomId);
