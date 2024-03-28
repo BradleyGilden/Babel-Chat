@@ -15,6 +15,8 @@
   let initialized = false;
   let isLoading = false;
 
+  const API_URL = 'https://bchat-1-0.onrender.com';
+
   $: {
     if (initialized) {
       if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,16}$/.test(password)) {

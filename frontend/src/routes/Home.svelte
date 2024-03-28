@@ -23,7 +23,7 @@
   import JoinRoomDialog from "../components/home/JoinRoomDialog.svelte";
   import SendInviteDialog from "../components/home/SendInviteDialog.svelte";
 
-  const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = 'https://bchat-1-0.onrender.com';
 
   let userInfo = JSON.parse(localStorage.getItem("user"));
 

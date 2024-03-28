@@ -17,7 +17,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server, {
   cors: {
-    origin: "*",
+    origin: "https://babel-chat.onrender.com",
   },
 });
 
@@ -29,6 +29,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
+    origin: "https://babel-chat.onrender.com",
     credentials: true,
   }),
 );

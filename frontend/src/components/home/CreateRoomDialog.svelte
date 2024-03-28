@@ -4,7 +4,7 @@
   import axios from "axios";
   import { nanoid } from "nanoid";
 
-  const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = 'https://bchat-1-0.onrender.com';
   export let privateRoomList = [];
   let addNewRoomName = "";
   let loadingNewRoom = false;
