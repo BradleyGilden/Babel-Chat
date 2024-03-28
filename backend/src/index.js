@@ -1,6 +1,5 @@
 import express from "express";
 import morgan from "morgan";
-import dotenv from "dotenv";
 import http from "http";
 import cors from "cors";
 import socketio from "socket.io";
@@ -12,9 +11,6 @@ import session from "express-session";
 import notFound from "./middleware/404";
 import swaggerDocs from './utility/swagger';
 import { generateSecretKey } from "./auth";
-
-// get environment variable files form .env for testing
-dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 const app = express();
