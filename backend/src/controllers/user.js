@@ -30,7 +30,7 @@ const createUser = asyncWrapper(async (req, res) => {
 });
 
 /**
- * POST signup a user by creating a document on the database => /api/user/login
+ * POST login a user and return document from the database => /api/user/login
  * 
  * @param {Object} req Express request object.
  * @param {Object} res Express response object.

@@ -155,7 +155,7 @@ baseRouter.get("/translate", getTranslation);
  * /api/translate/save:
  *   post:
  *     tags:
- *       - Save Translation
+ *       - Translate
  *     summary: Update translation for a message
  *     description: Endpoint to update the translation for a message identified by nanoId.
  *     requestBody:
