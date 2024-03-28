@@ -5,14 +5,14 @@
   import Settings from "./routes/Settings.svelte";
 
   const routes = {
-    '/': Login,
-    '/home': Home,
-    '/settings': Settings
-  }
+    "/": Login,
+    "/home": Home,
+    "/settings": Settings,
+  };
 </script>
 
 <main>
-  <Router { routes } />
+  <Router {routes} />
 </main>
 
 <style>

@@ -34,7 +34,7 @@ app.use(
     credentials: true,
   }),
 );
-app.use(morgan("dev")); // logger
+app.use(morgan("tiny")); // logger
 app.use(
   session({
     secret: generateSecretKey(),
@@ -50,7 +50,7 @@ const serverStartup = async () => {
   await mongooseConnect();
 
   server.listen(process.env.PORT || 3000, () => {
-    console.log("server starting");
+    console.log("server starting on port", process.env.PORT || 3000);
   });
 
   socketInit(io);

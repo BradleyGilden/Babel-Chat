@@ -5,7 +5,6 @@ const joinRoom = (io, socket) => {
   return (roomInfo) => {
     const roomName = roomInfo.currentRoom; // the sockets current room
     socket.join(roomName);
-    console.log("joined room", roomInfo);
     // gets number of clients in each room
     const room = io.sockets.adapter.rooms.get(roomInfo.currentRoom);
     const numClientsInRoom = room ? room.size : 0;
@@ -25,7 +24,6 @@ const joinRoom = (io, socket) => {
 
 const ghostJoin = (socket) => {
   return (roomInfo) => {
-    console.log("ghost join", roomInfo);
     const roomName = roomInfo.currentRoom;
     socket.join(roomName);
   };
@@ -33,7 +31,6 @@ const ghostJoin = (socket) => {
 
 const roomMessage = (io) => {
   return (messageInfo) => {
-    console.log(messageInfo);
 
     const namespace = messageInfo.namespace;
     delete messageInfo.namespace;
@@ -52,7 +49,6 @@ const notificationMessage = (io) => {
   return (notification) => {
     notification.date = new Date();
     notification.nanoId = nanoid();
-    console.log(notification);
     updateNotification(notification);
     const { username } = notification;
     io.of("/notify").emit(`${username}-notifications`, notification);

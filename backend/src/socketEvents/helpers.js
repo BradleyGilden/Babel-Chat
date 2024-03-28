@@ -20,11 +20,10 @@ const updateMessage = (messageObj) => {
 
 const updateNotification = (messageObj) => {
   const message = new Message(messageObj);
-  console.log("saved");
   message
     .save()
     .then((savedMessage) => {
-      console.log(savedMessage);
+      // message is now saved
     })
     .catch((err) => {
       console.log(err);

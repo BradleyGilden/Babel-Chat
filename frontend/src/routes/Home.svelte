@@ -1,194 +1,258 @@
 <script>
-// @ts-nocheck
+  // @ts-nocheck
   // tools
-  import { onMount } from 'svelte';
-  import { link, push } from 'svelte-spa-router'
-  import { io } from 'socket.io-client';
-  import axios from 'axios';
+  import { onMount } from "svelte";
+  import { link, push } from "svelte-spa-router";
+  import { io } from "socket.io-client";
+  import axios from "axios";
   // data
-  import { userData } from '../store';
+  import { userData } from "../store";
   // display components
-  import ThemeSelect from '../components/global/ThemeSelect.svelte';
-  import Profile from '../components/global/Profile.svelte';
-  import MessageBlock from '../components/home/MessageBlock.svelte';
-  import NameSpaces from '../components/home/NameSpaces.svelte';
-  import RoomListComponent from '../components/home/RoomListComponent.svelte';
-  import PrivateRoomListComponent from '../components/home/PrivateRoomListComponent.svelte';
+  import ThemeSelect from "../components/global/ThemeSelect.svelte";
+  import Profile from "../components/global/Profile.svelte";
+  import MessageBlock from "../components/home/MessageBlock.svelte";
+  import NameSpaces from "../components/home/NameSpaces.svelte";
+  import RoomListComponent from "../components/home/RoomListComponent.svelte";
+  import PrivateRoomListComponent from "../components/home/PrivateRoomListComponent.svelte";
   // action components
-  import SendInputComponent from '../components/home/SendInputComponent.svelte';
-  import AddRoomButton from '../components/home/AddRoomButton.svelte';
+  import SendInputComponent from "../components/home/SendInputComponent.svelte";
+  import AddRoomButton from "../components/home/AddRoomButton.svelte";
   // dialogs
-  import CreateRoomDialog from '../components/home/CreateRoomDialog.svelte';
-  import AddRoomDialog from '../components/home/AddRoomDialog.svelte';
-  import JoinRoomDialog from '../components/home/JoinRoomDialog.svelte';
-  import SendInviteDialog from '../components/home/SendInviteDialog.svelte';
+  import CreateRoomDialog from "../components/home/CreateRoomDialog.svelte";
+  import AddRoomDialog from "../components/home/AddRoomDialog.svelte";
+  import JoinRoomDialog from "../components/home/JoinRoomDialog.svelte";
+  import SendInviteDialog from "../components/home/SendInviteDialog.svelte";
 
   const API_URL = import.meta.env.VITE_API_URL;
 
-  let userInfo = JSON.parse(localStorage.getItem('user'));
+  let userInfo = JSON.parse(localStorage.getItem("user"));
 
   // people present in current room
   let roomMembers = 0;
   // global room values
-  let roomList = [], listenRooms = new Set(), joinedRooms = new Set();
+  let roomList = [],
+    listenRooms = new Set(),
+    joinedRooms = new Set();
   // private room values
-  let privateRoomList = [], listenPrivateRooms = new Set(), passcode = '';
-  
+  let privateRoomList = [],
+    listenPrivateRooms = new Set(),
+    passcode = "";
+
   // reference to div elements containing messages
   let messageBlock;
-  
+
   // current room selected
-  let currentRoom =  localStorage.getItem('currentRoom') || roomList[0]?.name || 'Rooms';
-  let currentNameSpace = localStorage.getItem('currentNameSpace') || '/';
+  let currentRoom =
+    localStorage.getItem("currentRoom") || roomList[0]?.name || "Rooms";
+  let currentNameSpace = localStorage.getItem("currentNameSpace") || "/";
   // message input box test
-  let currentText = '';
+  let currentText = "";
 
   // sendInvite dialog
-  let inviteCode = '', inviteUser = '', inviteRoom = '';
+  let inviteCode = "",
+    inviteUser = "",
+    inviteRoom = "";
 
   let notifyMessages = [];
 
-  let langCode = '';
-
-  $: console.log(langCode);
+  let langCode = "";
 
   $: notificationMessages = notifyMessages;
 
   $: messages = roomList.reduce((acc, room) => {
-    acc[room.name] = {history: room.messages, roomId: room.id};
-    return acc
+    acc[room.name] = { history: room.messages, roomId: room.id };
+    return acc;
   }, {});
 
   $: privateMessages = privateRoomList.reduce((acc, room) => {
-    acc[room.name] = {history: room.messages, roomId: room.id};
-    return acc
+    acc[room.name] = { history: room.messages, roomId: room.id };
+    return acc;
   }, {});
 
-  $: localStorage.setItem('currentRoom', currentRoom);
+  $: localStorage.setItem("currentRoom", currentRoom);
 
-  $: localStorage.setItem('currentNameSpace', currentNameSpace);
+  $: localStorage.setItem("currentNameSpace", currentNameSpace);
 
   let socket = io(API_URL);
   let socketPrivate = io(`${API_URL}/private`);
   let socketNotify = io(`${API_URL}/notify`);
 
   const notificationListenerInit = (socketNotify) => {
-    console.log('activated');
-    socketNotify.on(`${userInfo.username}-notifications`, async (notifications) => {
-      notificationMessages = [...notificationMessages, notifications]
-    })
-  }
+    socketNotify.on(
+      `${userInfo.username}-notifications`,
+      async (notifications) => {
+        notificationMessages = [...notificationMessages, notifications];
+      },
+    );
+  };
 
   const roomListenerInit = (socket, roomList) => {
     for (const room of roomList) {
       if (!listenRooms.has(room.name)) {
-        socket.emit('ghost join', { currentRoom: room.name, username: userInfo.username });
+        socket.emit("ghost join", {
+          currentRoom: room.name,
+          username: userInfo.username,
+        });
 
-        listenRooms = new Set([...listenRooms, room.name])
+        listenRooms = new Set([...listenRooms, room.name]);
         socket.on(`${room.name}-status`, async (message) => {
           roomMembers = message.numClients;
-          if (!joinedRooms.has(room.name) || (joinedRooms.has(room.name) && userInfo.username !== message.username)) {
-            message.text = `${message.username} has joined ${room.name}`
+          if (
+            !joinedRooms.has(room.name) ||
+            (joinedRooms.has(room.name) &&
+              userInfo.username !== message.username)
+          ) {
+            message.text = `${message.username} has joined ${room.name}`;
             if (langCode && message.text) {
-              const response = await axios.get(`${API_URL}/api/translate`, { params: { text: message.text, code: langCode } });
+              const response = await axios.get(`${API_URL}/api/translate`, {
+                params: { text: message.text, code: langCode },
+              });
               message.translation = response.data.translation;
             }
-            messages[room.name].history = [...messages[room.name].history, message]
+            messages[room.name].history = [
+              ...messages[room.name].history,
+              message,
+            ];
           }
           joinedRooms = new Set([...joinedRooms, room.name]);
         });
 
         socket.on(`${room.name}-message`, async (message) => {
-          if (langCode && message.text && userInfo.username !== message.username) {
-            const response = await axios.get(`${API_URL}/api/translate`, { params: { text: message.text, code: langCode } });
+          if (
+            langCode &&
+            message.text &&
+            userInfo.username !== message.username
+          ) {
+            const response = await axios.get(`${API_URL}/api/translate`, {
+              params: { text: message.text, code: langCode },
+            });
             message.translation = response.data.translation;
-            axios.post(`${API_URL}/api/translate/save`, { nanoId: message.nanoId, translation: message.translation });
+            axios.post(`${API_URL}/api/translate/save`, {
+              nanoId: message.nanoId,
+              translation: message.translation,
+            });
           }
-          if (message.text) messages[message.currentRoom].history = [...messages[message.currentRoom].history, message];
+          if (message.text)
+            messages[message.currentRoom].history = [
+              ...messages[message.currentRoom].history,
+              message,
+            ];
         });
       }
     }
-  }
+  };
 
   const privateRoomListenerInit = (privateSocket, privateRoomList) => {
     for (const privateRoom of privateRoomList) {
-      privateSocket.emit('ghost join', { currentRoom: privateRoom.name, username: userInfo.username });
+      privateSocket.emit("ghost join", {
+        currentRoom: privateRoom.name,
+        username: userInfo.username,
+      });
       if (!listenPrivateRooms.has(privateRoom.name)) {
-        listenPrivateRooms = new Set([...listenPrivateRooms, privateRoom.name])
+        listenPrivateRooms = new Set([...listenPrivateRooms, privateRoom.name]);
         privateSocket.on(`${privateRoom.name}-message`, async (message) => {
-          if (langCode && message.text && userInfo.username !== message.username) {
-            const response = await axios.get(`${API_URL}/api/translate`, { params: { text: message.text, code: langCode } });
+          if (
+            langCode &&
+            message.text &&
+            userInfo.username !== message.username
+          ) {
+            const response = await axios.get(`${API_URL}/api/translate`, {
+              params: { text: message.text, code: langCode },
+            });
             message.translation = response.data.translation;
-            axios.post(`${API_URL}/api/translate/save`, { nanoId: message.nanoId, translation: message.translation });
+            axios.post(`${API_URL}/api/translate/save`, {
+              nanoId: message.nanoId,
+              translation: message.translation,
+            });
           }
-          if (message.text) privateMessages[message.currentRoom].history = [...privateMessages[message.currentRoom].history, message];
+          if (message.text)
+            privateMessages[message.currentRoom].history = [
+              ...privateMessages[message.currentRoom].history,
+              message,
+            ];
         });
       }
     }
-  }
+  };
 
-  socket.on('add room', (room) => { roomList = [...roomList, room] });
-
-  socket.on('delete room', (obj) => {
-    // add room instantly only if on the current namespace
-    if (obj.username !== userInfo.username ) {
-      roomList = roomList.filter((room) => room.id !== obj.roomId);
-      if (obj.roomName === currentRoom) {
-        localStorage.setItem('currentRoom', roomList[0]?.name);
-        currentRoom = roomList[0]?.name;
-      }
-    } 
+  socket.on("add room", (room) => {
+    roomList = [...roomList, room];
   });
 
-  socketPrivate.on('delete room', (obj) => {
-    if (obj.userId !== userInfo.id ) {
-      privateRoomList = privateRoomList.filter((room) => room.id !== obj.roomId);
+  socket.on("delete room", (obj) => {
+    // add room instantly only if on the current namespace
+    if (obj.username !== userInfo.username) {
+      roomList = roomList.filter((room) => room.id !== obj.roomId);
       if (obj.roomName === currentRoom) {
-        localStorage.setItem('currentRoom', privaeRoomList[0]?.name);
+        localStorage.setItem("currentRoom", roomList[0]?.name);
+        currentRoom = roomList[0]?.name;
+      }
+    }
+  });
+
+  socketPrivate.on("delete room", (obj) => {
+    if (obj.userId !== userInfo.id) {
+      privateRoomList = privateRoomList.filter(
+        (room) => room.id !== obj.roomId,
+      );
+      if (obj.roomName === currentRoom) {
+        localStorage.setItem("currentRoom", privaeRoomList[0]?.name);
         currentRoom = privateRoomList[0]?.name;
       }
     }
-  })
+  });
 
   $: roomListenerInit(socket, roomList);
   $: privateRoomListenerInit(socketPrivate, privateRoomList);
 
   $: {
     async function fetchRoomData() {
-      if (currentNameSpace === '/') {
-        let response = await axios.get(`${API_URL}/api/rooms`, { params: {namespace: '/' }});
+      if (currentNameSpace === "/") {
+        let response = await axios.get(`${API_URL}/api/rooms`, {
+          params: { namespace: "/" },
+        });
         roomList = response.data;
-      } else if (currentNameSpace === '/private') {
-        let privateResponse = await axios.get(`${API_URL}/api/rooms/private`, { params: { userId: userInfo.id }});
+      } else if (currentNameSpace === "/private") {
+        let privateResponse = await axios.get(`${API_URL}/api/rooms/private`, {
+          params: { userId: userInfo.id },
+        });
         privateRoomList = privateResponse.data;
       } else {
-        let notifyResponse = await axios.get(`${API_URL}/api/notifications`, { params: { username: userInfo.username }})
+        let notifyResponse = await axios.get(`${API_URL}/api/notifications`, {
+          params: { username: userInfo.username },
+        });
         notifyMessages = notifyResponse.data;
       }
     }
     fetchRoomData();
-  };
+  }
 
   $: if (currentRoom && currentNameSpace) {
     if (messageBlock) {
       setTimeout(() => {
         messageBlock.focus();
-        messageBlock.scrollTo(0, messageBlock.scrollHeight)
-      }, 200)
-    };
-  };
+        messageBlock.scrollTo(0, messageBlock.scrollHeight);
+      }, 200);
+    }
+  }
 
   onMount(async () => {
-    let response = await axios.get(`${API_URL}/api/rooms`, { params: {namespace: '/' }});
+    let response = await axios.get(`${API_URL}/api/rooms`, {
+      params: { namespace: "/" },
+    });
     roomList = response.data;
     roomListenerInit(socket, roomList);
-    socket.emit('join room', { currentRoom, username: userInfo.username });
+    socket.emit("join room", { currentRoom, username: userInfo.username });
 
-    let privateResponse = await axios.get(`${API_URL}/api/rooms/private`, { params: { userId: userInfo.id }});
+    let privateResponse = await axios.get(`${API_URL}/api/rooms/private`, {
+      params: { userId: userInfo.id },
+    });
     privateRoomList = privateResponse.data;
     privateRoomListenerInit(socketPrivate, privateRoomList);
 
-    let notifyResponse = await axios.get(`${API_URL}/api/notifications`, { params: { username: userInfo.username }})
+    let notifyResponse = await axios.get(`${API_URL}/api/notifications`, {
+      params: { username: userInfo.username },
+    });
     notifyMessages = notifyResponse.data;
     notificationListenerInit(socketNotify);
   });
@@ -198,117 +262,177 @@
     if (e.target?.dataset?.passcode) {
       passcode = e.target.dataset.passcode;
     } else {
-      passcode = '';
+      passcode = "";
     }
-    if (currentNameSpace === "/") { 
-      socket.emit('join room', { currentRoom, username: userInfo.username });
+    if (currentNameSpace === "/") {
+      socket.emit("join room", { currentRoom, username: userInfo.username });
     } else {
-      socketPrivate.emit('ghost join', { currentRoom, username: userInfo.username });
+      socketPrivate.emit("ghost join", {
+        currentRoom,
+        username: userInfo.username,
+      });
     }
-  }
+  };
 
   const handleSendMessage = (e) => {
     if (currentNameSpace === "/") {
-      socket.emit('room message', { currentRoom, username: userInfo.username, text: currentText, roomId: messages[currentRoom]?.roomId, namespace: "/" });
+      socket.emit("room message", {
+        currentRoom,
+        username: userInfo.username,
+        text: currentText,
+        roomId: messages[currentRoom]?.roomId,
+        namespace: "/",
+      });
     } else {
-      socketPrivate.emit('room message', { currentRoom, username: userInfo.username, text: currentText, roomId: privateMessages[currentRoom]?.roomId, namespace: "/private" });
+      socketPrivate.emit("room message", {
+        currentRoom,
+        username: userInfo.username,
+        text: currentText,
+        roomId: privateMessages[currentRoom]?.roomId,
+        namespace: "/private",
+      });
     }
-    currentText = '';
-  }
+    currentText = "";
+  };
 
   const handleRoomDelete = async (roomId, roomName) => {
     const id = roomId;
     const name = roomName;
     roomList = roomList.filter((room) => room.id !== roomId);
     if (name === currentRoom) {
-      localStorage.setItem('currentRoom', roomList[0]?.name);
+      localStorage.setItem("currentRoom", roomList[0]?.name);
       currentRoom = roomList[0]?.name;
     }
     // delete the room and all it's messages
-    await axios.delete(`${API_URL}/api/rooms`, { data: { roomId: id, username: userInfo.username, roomName: name } });
+    await axios.delete(`${API_URL}/api/rooms`, {
+      data: { roomId: id, username: userInfo.username, roomName: name },
+    });
     // leave room connected by the server
-    socket.emit('leave room', name);
-  }
+    socket.emit("leave room", name);
+  };
 
   const handlePrivateRoomDelete = async (roomId, roomName) => {
     const id = roomId;
     const name = roomName;
     privateRoomList = privateRoomList.filter((room) => room.id !== roomId);
     if (name === currentRoom) {
-      localStorage.setItem('currentRoom', privateRoomList[0]?.name);
+      localStorage.setItem("currentRoom", privateRoomList[0]?.name);
       currentRoom = privateRoomList[0]?.name;
     }
     // delete the room and all it's messages
-    await axios.delete(`${API_URL}/api/rooms/private`, { data: { roomId: id, userId: userInfo.id, roomName: name } });
+    await axios.delete(`${API_URL}/api/rooms/private`, {
+      data: { roomId: id, userId: userInfo.id, roomName: name },
+    });
     // leave room connected by the server
-    socketPrivate.emit('leave room', name);
-  }
+    socketPrivate.emit("leave room", name);
+  };
 </script>
 
 <div>
   <AddRoomDialog />
   <CreateRoomDialog bind:privateRoomList />
   <JoinRoomDialog bind:privateRoomList />
-  <SendInviteDialog bind:socketNotify bind:inviteRoom bind:inviteCode bind:inviteUser />
+  <SendInviteDialog
+    bind:socketNotify
+    bind:inviteRoom
+    bind:inviteCode
+    bind:inviteUser
+  />
 
-  <div class='flex w-full font-inter'>
-    <div class='w-2/6 h-screen max-h-screen bg-secondary-content'>
+  <div class="flex w-full font-inter">
+    <div class="w-2/6 h-screen max-h-screen bg-secondary-content">
       <!-- ------------------------------------ Chat Header 1 ------------------------------------ -->
-      <header class='h-20 flex items-center gap-6'>
-        <Profile moniker={userInfo.username[0].toUpperCase()} status={'online'} />
-        <h2 class='text-2xl'>{userInfo.username}</h2>
+      <header class="h-20 flex items-center gap-6">
+        <Profile
+          moniker={userInfo.username[0].toUpperCase()}
+          status={"online"}
+        />
+        <h2 class="text-2xl">{userInfo.username}</h2>
       </header>
       <!-- ------------------------------------ /Chat Header 1 ------------------------------------ -->
-      <a href="/settings" class="btn btn-secondary w-full text-2xl rounded-none" use:link>Settings</a>
+      <a
+        href="/settings"
+        class="btn btn-secondary w-full text-2xl rounded-none"
+        use:link>Settings</a
+      >
       <div class="w-full flex">
         <!-- ------------------------------------ NameSpaces ------------------------------------ -->
         <NameSpaces bind:currentNameSpace />
         <!-- ------------------------------------ /NameSpaces ------------------------------------ -->
         <!-- Room List -->
         <div class="my-5 flex flex-col gap-5 text-xl max-h-screen grow">
-          {#if currentNameSpace === '/'}
-          <AddRoomButton />
-          {:else if currentNameSpace === '/private'}
-          <div class="join w-full rounded-none">
-            <button
-              class="btn btn-success join-item text-xl w-1/2"
-              on:click={() => document.getElementById("create_room_modal").showModal()}
-            >Create Room
-            </button>
-            <button class="btn btn-accent join-item text-xl w-1/2"
-            on:click={() => document.getElementById("join_room_modal").showModal()}
-            >Join Room
-            </button>
-          </div>
+          {#if currentNameSpace === "/"}
+            <AddRoomButton />
+          {:else if currentNameSpace === "/private"}
+            <div class="join w-full rounded-none">
+              <button
+                class="btn btn-success join-item text-xl w-1/2"
+                on:click={() =>
+                  document.getElementById("create_room_modal").showModal()}
+                >Create Room
+              </button>
+              <button
+                class="btn btn-accent join-item text-xl w-1/2"
+                on:click={() =>
+                  document.getElementById("join_room_modal").showModal()}
+                >Join Room
+              </button>
+            </div>
           {/if}
           <!-- -------------------------- Room List ----------------------------- -->
-          {#if currentNameSpace === '/'}
-          <RoomListComponent bind:roomList bind:currentRoom {roomClickHandler} {handleRoomDelete}/>
-          {:else if currentNameSpace === '/private'}
-          <PrivateRoomListComponent bind:inviteRoom bind:inviteCode bind:privateRoomList bind:currentRoom {roomClickHandler} {handlePrivateRoomDelete}/>
+          {#if currentNameSpace === "/"}
+            <RoomListComponent
+              bind:roomList
+              bind:currentRoom
+              {roomClickHandler}
+              {handleRoomDelete}
+            />
+          {:else if currentNameSpace === "/private"}
+            <PrivateRoomListComponent
+              bind:inviteRoom
+              bind:inviteCode
+              bind:privateRoomList
+              bind:currentRoom
+              {roomClickHandler}
+              {handlePrivateRoomDelete}
+            />
           {/if}
           <!-- -------------------------- /Room List ----------------------------- -->
         </div>
       </div>
     </div>
 
-    <div class='w-4/6 h-screen flex flex-col'>
+    <div class="w-4/6 h-screen flex flex-col">
       <!-- ------------------------------------ Chat Header 2 ------------------------------------ -->
-      <header class='h-20 border-b-4 border-neutral mx-5 flex items-center'>
-        <h2 class='text-3xl'>{currentRoom} <span class="text-sm text-accent">{passcode && `(${passcode})`}</span></h2>
-        <h3 class='text-center grow'>Members 0nline {roomMembers}</h3>
-        <div class='ml-auto'>
-          <ThemeSelect size={'16'} />
+      <header class="h-20 border-b-4 border-neutral mx-5 flex items-center">
+        <h2 class="text-3xl">
+          {currentRoom}
+          <span class="text-sm text-accent">{passcode && `(${passcode})`}</span>
+        </h2>
+        <h3 class="text-center grow">Members 0nline {roomMembers}</h3>
+        <div class="ml-auto">
+          <ThemeSelect size={"16"} />
         </div>
       </header>
       <!-- ------------------------------------ /Chat Header 2 ------------------------------------ -->
 
       <!-- ------------------------------------ Message Block ------------------------------------ -->
-      <MessageBlock bind:messageBlock bind:currentNameSpace bind:notificationMessages bind:privateMessages bind:messages bind:currentRoom />
+      <MessageBlock
+        bind:messageBlock
+        bind:currentNameSpace
+        bind:notificationMessages
+        bind:privateMessages
+        bind:messages
+        bind:currentRoom
+      />
       <!-- ------------------------------------ /Message Block ------------------------------------ -->
 
       <!-- ------------------------------------ Send Message Input ------------------------------------ -->
-      <SendInputComponent on:click={handleSendMessage} bind:currentText bind:langCode />
+      <SendInputComponent
+        on:click={handleSendMessage}
+        bind:currentText
+        bind:langCode
+      />
       <!-- ------------------------------------ /Send Message Input ------------------------------------ -->
     </div>
   </div>
