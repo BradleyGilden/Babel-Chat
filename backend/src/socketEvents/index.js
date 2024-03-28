@@ -6,6 +6,12 @@ import {
   notificationMessage,
 } from "./roomControllers";
 
+/**
+ * Initializes listeners and workers for the server socket handlers
+ * 
+ * @param {socketio} io socketio server instance
+ */
+
 const socketInit = (io) => {
   io.on("connection", (socket) => {
     socket.on("join room", joinRoom(io, socket));
