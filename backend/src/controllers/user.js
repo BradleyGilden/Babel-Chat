@@ -4,6 +4,15 @@ import { User, Message } from "../models";
 import CustomError from "../utility/error";
 import { hashpwd, checkpwd } from "../auth";
 
+/**
+ * POST signup a user by creating a document on the database =>
+ * /api/user/signup
+ * 
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Object} String with confirmation message
+ */
+
 const createUser = asyncWrapper(async (req, res) => {
   // get values from request body, whether urlencoded or json
   const { username, email, password } = req.body;
@@ -19,6 +28,14 @@ const createUser = asyncWrapper(async (req, res) => {
   await user.save();
   res.status(201).send(`User created`);
 });
+
+/**
+ * POST signup a user by creating a document on the database => /api/user/login
+ * 
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {Object} JSON response with room object
+ */
 
 const validateUser = asyncWrapper(async (req, res) => {
   const { username, password } = req.body;
@@ -50,9 +67,17 @@ const validateUser = asyncWrapper(async (req, res) => {
   res.status(200).json(userObj);
 });
 
+/**
+ * POST update user data fields => /api/user/update
+ * 
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
+
 const updateUser = asyncWrapper(async (req, res) => {
   const { uid, fields } = req.body;
 
+  // check which fields are provided by clietn
   if (fields.newname) {
     const user = await User.findOne({ username: fields.newname }).exec();
 
@@ -75,6 +100,13 @@ const updateUser = asyncWrapper(async (req, res) => {
 
   res.sendStatus(204);
 });
+
+/**
+ * DELETE logout user from session => /user/logout
+ * 
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ */
 
 const logoutUser = asyncWrapper(async (req, res) => {
   req.session.destroy((err) => {
