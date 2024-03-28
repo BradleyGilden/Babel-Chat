@@ -28,10 +28,7 @@ global.io = io;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
-  cors({
-    origin: "https://babel-chat.onrender.com",
-    credentials: true,
-  }),
+  cors({ origin: "https://babel-chat.onrender.com" }),
 );
 app.use(morgan("tiny")); // logger
 app.use(
