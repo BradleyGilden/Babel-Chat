@@ -6,8 +6,8 @@ import CustomError from "../utility/error";
 /**
  * GET list of globalrooms => /api/rooms
  * 
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {Object} req Express request object.
+ * @param {Object} res Express response object.
  * @returns {Object} JSON response with room list.
  */
 
@@ -39,8 +39,8 @@ const getRooms = asyncWrapper(async (req, res) => {
 /**
  * DELETE globalroom => /api/rooms
  * 
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {Object} req Express request object.
+ * @param {Object} res Express response object.
  */
 
 const deleteRooms = asyncWrapper(async (req, res) => {
@@ -57,8 +57,8 @@ const deleteRooms = asyncWrapper(async (req, res) => {
 /**
  * POST create an instance of a global room => /api/rooms
  * 
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {Object} req Express request object.
+ * @param {Object} res Express response object.
  * @returns {Object} JSON response with room list.
  */
 
@@ -80,8 +80,8 @@ const createRoomsGlobal = asyncWrapper(async (req, res) => {
 /**
  * POST create private room instance => /api/rooms
  * 
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {Object} req Express request object.
+ * @param {Object} res Express response object.
  * @returns {Object} JSON response with room object
  */
 
@@ -113,8 +113,8 @@ const createRoomsPrivate = asyncWrapper(async (req, res) => {
 /**
  * POST join rooms endpoint => /api/translate
  * 
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {Object} req Express request object.
+ * @param {Object} res Express response object.
  * @returns {Object} JSON response with room object
  */
 
@@ -144,8 +144,8 @@ const joinRoomsPrivate = asyncWrapper(async (req, res) => {
 /**
  * GET list of private rooms belonging to a user => /api/translate
  * 
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {Object} req Express request object.
+ * @param {Object} res Express response object.
  * @returns {Object} JSON response with room object
  */
 
@@ -178,8 +178,8 @@ const getRoomsPrivate = asyncWrapper(async (req, res) => {
 /**
  * DELETE private rooms for owner and other members => /api/translate
  * 
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {Object} req Express request object.
+ * @param {Object} res Express response object.
  */
 
 const deleteRoomsPrivate = asyncWrapper(async (req, res) => {

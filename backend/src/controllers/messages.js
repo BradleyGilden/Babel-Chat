@@ -5,8 +5,8 @@ import translate from "google-translate-api-x";
 /**
  * GET notification message endpoint => /api/notifications
  * 
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {Object} req Express request object.
+ * @param {Object} res Express response object.
  * @returns {Object} JSON response with message.
  */
 
@@ -26,8 +26,8 @@ const getNotifications = asyncWrapper(async (req, res) => {
 /**
  * GET translation endpoint => /api/translate
  * 
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {Object} req Express request object.
+ * @param {Object} res Express response object.
  * @returns {Object} JSON response with translation.
  */
 
@@ -43,8 +43,8 @@ const getTranslation = asyncWrapper(async (req, res) => {
  * POST translation endpoint to update translation in message =>
  * /api/translate/save
  *
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {Object} req Express request object.
+ * @param {Object} res Express response object.
  * @returns {Object} JSON response with translation.
  */
 

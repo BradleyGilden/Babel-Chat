@@ -8,8 +8,8 @@ import { hashpwd, checkpwd } from "../auth";
  * POST signup a user by creating a document on the database =>
  * /api/user/signup
  * 
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {Object} req Express request object.
+ * @param {Object} res Express response object.
  * @returns {Object} String with confirmation message
  */
 
@@ -32,8 +32,8 @@ const createUser = asyncWrapper(async (req, res) => {
 /**
  * POST signup a user by creating a document on the database => /api/user/login
  * 
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {Object} req Express request object.
+ * @param {Object} res Express response object.
  * @returns {Object} JSON response with room object
  */
 
@@ -70,8 +70,8 @@ const validateUser = asyncWrapper(async (req, res) => {
 /**
  * POST update user data fields => /api/user/update
  * 
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {Object} req Express request object.
+ * @param {Object} res Express response object.
  */
 
 const updateUser = asyncWrapper(async (req, res) => {
@@ -104,8 +104,8 @@ const updateUser = asyncWrapper(async (req, res) => {
 /**
  * DELETE logout user from session => /user/logout
  * 
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
+ * @param {Object} req Express request object.
+ * @param {Object} res Express response object.
  */
 
 const logoutUser = asyncWrapper(async (req, res) => {
