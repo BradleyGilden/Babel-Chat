@@ -1,9 +1,12 @@
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const sinon = require('sinon');
-const { expect } = chai;
+import chai, { expect } from 'chai';
+import chaiHttp from 'chai-http';
+import sinon from 'sinon';
 import { app } from '../../src/index';
 import { getNotifications, getTranslation, postUpdateTranslation } from '../../src/controllers/messages';
+
+/**
+ * This is the test case for the message controller
+ */
 
 chai.use(chaiHttp);
 
