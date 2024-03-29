@@ -5,6 +5,11 @@ import { User, Message } from '../../src/models';
 import CustomError from '../../src/utility/error';
 import { hashpwd, checkpwd } from '../../src/auth';
 
+/**
+ * This is the test case for the user controller
+ */
+
+
 describe('User Controller Tests', () => {
   describe('POST /api/user/signup', () => {
     it('should create a new user', async () => {
