@@ -17,7 +17,7 @@
 * [Features](#features)
 * [Technologies used](#technologies-used)
 * [Important Path Descriptions](#important-path-descriptions)
-* [Liscence](#license)
+* [API Documentation](#api-documentation)
 * [Blog](#blog)
 * [Credits](#credits)
 
@@ -78,6 +78,14 @@ This is a web-based realtime chat application that allows users to communicate s
 - **Svelte**: A modern JavaScript framework utilized for building interactive user interfaces.
 - **Tailwind CSS**: A utility-first CSS framework for rapidly building custom designs without having to leave your HTML.
 - **Daisy UI**: A set of configurable components built on top of Tailwind CSS, used for enhancing UI design.
+
+<div align="center">
+
+## Important Path Descriptions
+
+</div>
+
+The project is divided into a `frontend` and `backend` section. Check the relative readme's for file descriptions
 
 <div align="center">
 
