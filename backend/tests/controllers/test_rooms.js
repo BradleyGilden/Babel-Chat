@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { Types } from 'mongoose';
-import { getRooms, deleteRooms, createRoomsGlobal, createRoomsPrivate, joinRoomsPrivate, getRoomsPrivate, deleteRoomsPrivate } from '../path/to/your/controllers';
-import { Room, Message, User } from '../../src/models/room';
+import { getRooms, deleteRooms, createRoomsGlobal, createRoomsPrivate, joinRoomsPrivate, getRoomsPrivate, deleteRoomsPrivate } from '../../src/controllers';
+import { Room, Message, User } from '../../src/models';
 import CustomError from '../../src/utility/error';
 
 /**
