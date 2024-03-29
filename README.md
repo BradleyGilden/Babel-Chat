@@ -7,7 +7,7 @@
 <h1 align='center' color='blue'>BABEL CHAT</h1>
 
 <p align="center">
-    <a href="https://gitcraft.bradleygilden.tech">
+    <a href="https://bchat.bradleygilden.tech">
     <img src="https://img.shields.io/badge/deployed_on_render-black?style=for-the-badge&logo=render&logoColor=white" />
     </a>
 </p>
@@ -15,7 +15,9 @@
 * [About](#about)
 * [Demo](#demo)
 * [Features](#features)
+* [Technologies used](#technologies-used)
 * [Important Path Descriptions](#important-path-descriptions)
+* [Liscence](#license)
 * [Blog](#blog)
 * [Credits](#credits)
 
@@ -43,12 +45,20 @@ This is a web-based realtime chat application that allows users to communicate s
 
 </div>
 
-- Realtime chat functionality
-- Live translation of messages
-- User-friendly interface
-- Support for multiple languages
+- ### Realtime chat functionality
+  * Babel Chat utilizes the socket.io library to enable real time communication over the web
+- ### Live translation of messages
+  * the google-translate-api-x library is build ontop of googles translation api allowing for less rate limiting with free use using batch translations
+- ### User-friendly interface
+  * The interface was designed with inspiration from Slack and Discord allowing for users to be familiar with the layout
+- ### Support for multiple languages
+  * The application supports all languages supported by google translate
 
-## Technologies Used
+<div align="center">
+
+## Technologies used
+
+</div>
 
 <img src='https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00'>
 <img src='https://img.shields.io/badge/Express.js-404D59?style=for-the-badge'>
@@ -61,7 +71,7 @@ This is a web-based realtime chat application that allows users to communicate s
 - **Express**: A minimal and flexible Node.js web application framework utilized for building the server-side logic.
 - **Socket.io**: Enables real-time, bidirectional, and event-based communication between web clients and servers.
 - **Swagger**: API documentation tool used for documenting the RESTful APIs of the application.
-- **translate-api-x**: A translation API library integrated for translating messages in real-time.
+- **google-translate-api-x**: A translation API library integrated for translating messages in real-time.
 
 ### Frontend
 
@@ -69,9 +79,13 @@ This is a web-based realtime chat application that allows users to communicate s
 - **Tailwind CSS**: A utility-first CSS framework for rapidly building custom designs without having to leave your HTML.
 - **Daisy UI**: A set of configurable components built on top of Tailwind CSS, used for enhancing UI design.
 
+<div align="center">
+
 ## API Documentation
 
-API documentation is available using Swagger. Once the server is running, access `http://localhost:PORT/swagger-ui` to view the API documentation.
+</div>
+
+API documentation is available using Swagger. Once the server is running, access <a href='https://bchat-1-0.onrender.com/api'>https://bchat-1-0.onrender.com/docs</a> to view the API documentation.
 
 <div align="center">
 
@@ -81,13 +95,6 @@ API documentation is available using Swagger. Once the server is running, access
 
 Contributions are welcome! Feel free to open issues or submit pull requests.
 
-<div align="center">
-
-## License
-
-</div>
-
-This project is licensed under the [MIT License](LICENSE).
 
 <div align="center">
 
@@ -98,8 +105,6 @@ This project is licensed under the [MIT License](LICENSE).
 * [Custom Alerts - SweetAlert2](https://sweetalert2.github.io/)
 * [Badges - Shields.io](https://shields.io)
 * [Icons - remixicon.com](https://remixicon.com)
-* [Image resources - Unsplash.com](https://unsplash.com)
-
 
 <div align="center">
 
