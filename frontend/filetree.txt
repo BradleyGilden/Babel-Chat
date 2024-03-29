@@ -1,0 +1,52 @@
+.
+├── README.md
+├── filetree.txt
+├── index.html
+├── jsconfig.json
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── public
+│   └── vite.svg
+├── src
+│   ├── App.svelte
+│   ├── app.css
+│   ├── assets
+│   │   └── svelte.svg
+│   ├── components
+│   │   ├── global
+│   │   │   ├── Profile.svelte
+│   │   │   └── ThemeSelect.svelte
+│   │   ├── home
+│   │   │   ├── AddRoomButton.svelte
+│   │   │   ├── AddRoomDialog.svelte
+│   │   │   ├── ChatBubbles.svelte
+│   │   │   ├── CreateRoomDialog.svelte
+│   │   │   ├── JoinRoomDialog.svelte
+│   │   │   ├── LangSelect.svelte
+│   │   │   ├── MessageBlock.svelte
+│   │   │   ├── NameSpaces.svelte
+│   │   │   ├── PrivateRoomListComponent.svelte
+│   │   │   ├── RoomListComponent.svelte
+│   │   │   ├── SendInputComponent.svelte
+│   │   │   └── SendInviteDialog.svelte
+│   │   └── login
+│   │       ├── LoginForm.svelte
+│   │       └── SignupForm.svelte
+│   ├── lib
+│   ├── main.js
+│   ├── routes
+│   │   ├── Home.svelte
+│   │   ├── Login.svelte
+│   │   └── Settings.svelte
+│   ├── store
+│   │   └── index.js
+│   ├── utility
+│   │   ├── dateHandler.js
+│   │   └── languages.js
+│   └── vite-env.d.ts
+├── svelte.config.js
+├── tailwind.config.js
+└── vite.config.js
+
+11 directories, 38 files
