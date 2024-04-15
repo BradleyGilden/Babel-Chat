@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
-import { createUser, validateUser, updateUser, logoutUser } from '../../src/controllers';
+import { createUser, validateUser, updateUser } from '../../src/controllers';
 import { User, Message } from '../../src/models';
 import CustomError from '../../src/utility/error';
 import { hashpwd, checkpwd } from '../../src/auth';
@@ -74,18 +74,6 @@ describe('User Controller Tests', () => {
       User.prototype.save.restore();
       Message.updateMany.restore();
       User.findByIdAndUpdate.restore();
-    });
-  });
-
-  describe('DELETE /user/logout', () => {
-    it('should logout user from session', async () => {
-      const req = { session: { destroy: sinon.spy() } };
-      const res = { sendStatus: sinon.spy() };
-
-      await logoutUser(req, res);
-
-      expect(req.session.destroy.calledOnce).to.be.true;
-      expect(res.sendStatus.calledWith(204)).to.be.true;
     });
   });
 });

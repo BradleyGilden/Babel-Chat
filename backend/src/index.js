@@ -7,7 +7,6 @@ import socketInit from "./socketEvents";
 import baseRouter from "./routes";
 import errorHandler from "./middleware/errorHandler";
 import mongooseConnect from "./db/connect";
-import session from "express-session";
 import notFound from "./middleware/404";
 import swaggerDocs from './utility/swagger';
 import { generateSecretKey } from "./auth";
@@ -29,13 +28,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(morgan("tiny")); // logger
-app.use(
-  session({
-    secret: generateSecretKey(),
-    resave: false,
-    saveUninitialized: false,
-  }),
-);
 // api docs
 swaggerDocs(app, PORT);
 app.use("/api", baseRouter);

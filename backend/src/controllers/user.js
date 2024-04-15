@@ -61,9 +61,6 @@ const validateUser = asyncWrapper(async (req, res) => {
     rooms: user.rooms,
   };
 
-  req.session.user = userObj;
-  req.session.user.id = user._id;
-
   res.status(200).json(userObj);
 });
 
@@ -101,21 +98,5 @@ const updateUser = asyncWrapper(async (req, res) => {
   res.sendStatus(204);
 });
 
-/**
- * DELETE logout user from session => /user/logout
- * 
- * @param {Object} req Express request object.
- * @param {Object} res Express response object.
- */
 
-const logoutUser = asyncWrapper(async (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      throw new CustomError("Error logging out", 500);
-    } else {
-      res.sendStatus(204);
-    }
-  });
-});
-
-export { createUser, validateUser, updateUser, logoutUser };
+export { createUser, validateUser, updateUser };

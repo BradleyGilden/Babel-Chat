@@ -7,27 +7,9 @@ import {
   createUser,
   validateUser,
   updateUser,
-  logoutUser,
 } from "../controllers";
 
 const userRouter = express.Router();
-
-/**
- * @openapi
- * /api/user/logout:
- *   delete:
- *     tags:
- *       - User
- *     summary: Logout user
- *     description: Endpoint to logout a user from the session.
- *     responses:
- *       '204':
- *         description: Successfully logged out the user.
- *       '500':
- *         description: Internal Server Error. Failed to logout user.
- */
-
-userRouter.delete("/logout", logoutUser);
 
 /**
  * @openapi

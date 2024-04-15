@@ -3,7 +3,7 @@
  */
 
 import { serverCheck, dbCheck } from "./service";
-import { createUser, validateUser, updateUser, logoutUser } from "./user";
+import { createUser, validateUser, updateUser } from "./user";
 import {
   getNotifications,
   getTranslation,
@@ -25,7 +25,6 @@ export {
   createUser,
   validateUser,
   updateUser,
-  logoutUser,
   getRooms,
   deleteRooms,
   createRoomsGlobal,

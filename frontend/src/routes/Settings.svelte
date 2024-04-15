@@ -53,7 +53,6 @@
     localStorage.removeItem("user");
     localStorage.removeItem("currentRoom");
     localStorage.removeItem("currentNameSpace");
-    await axios.delete(`${API_URL}/api/user/logout`);
     logoutLoading = false;
     await push("/");
   };
